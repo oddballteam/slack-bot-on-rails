@@ -29,6 +29,8 @@ gem 'jbuilder', '~> 2.7'
 gem 'bootsnap', '>= 1.4.2', require: false
 
 # Slack bot
+gem 'celluloid-io'
+gem 'react-rails'
 gem 'slack-ruby-bot'
 
 group :development, :test do
