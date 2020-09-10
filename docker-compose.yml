@@ -1,0 +1,14 @@
+version: '3.4'
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: tacos
+      POSTGRES_USER: slack_bot_on_rails
+    volumes:
+      - db-data:/var/lib/postgresql/data:cached
+    ports:
+      - "5432:5432"
+
+volumes:
+  db-data:
