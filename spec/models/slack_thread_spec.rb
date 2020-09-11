@@ -57,6 +57,29 @@ RSpec.describe SlackThread do
     it { is_expected.to eq(permalink) }
   end
 
+  context 'date queries' do
+    let(:last_month) { 1.month.ago.to_date }
+    let(:last_months_threads) { [ SlackThread.create(started_at: last_month) ] }
+    let(:this_month) { Date.today }
+    let(:this_months_threads) { [ SlackThread.create(started_at: this_month) ] }
+    let(:threads) { last_months_threads + last_months_threads }
+
+    describe '.after(this_month)' do
+      subject { SlackThread.after(this_month) }
+      it { is_expected.to match_array(this_months_threads) }
+    end
+
+    describe '.before(this_month)' do
+      subject { SlackThread.before(this_month) }
+      it { is_expected.to match_array(last_months_threads) }
+    end
+
+    describe '.after(last_month).before(this_month)' do
+      subject { SlackThread.after(last_month).before(this_month) }
+      it { is_expected.to match_array(last_months_threads) }
+    end
+  end
+
   describe '#now_tracking' do
     subject { thread.now_tracking }
     it { is_expected.to include(permalink) }

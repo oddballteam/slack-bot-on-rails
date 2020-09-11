@@ -29,6 +29,7 @@ gem 'jbuilder', '~> 2.7'
 gem 'bootsnap', '>= 1.4.2', require: false
 
 # Slack bot
+gem 'acts-as-taggable-on'
 gem 'celluloid-io'
 gem 'react-rails'
 gem 'slack-ruby-bot'
