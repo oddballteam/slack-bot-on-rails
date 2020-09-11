@@ -1,34 +1,6 @@
-# A sample Guardfile
-# More info at https://github.com/guard/guard#readme
-
-## Uncomment and set this to only include directories you want to watch
-# directories %w(app lib config test spec features) \
-#  .select{|d| Dir.exist?(d) ? d : UI.warning("Directory #{d} does not exist")}
-
-## Note: if you are using the `directories` clause above and you are not
-## watching the project directory ('.'), then you will want to move
-## the Guardfile to a watched dir and symlink it back, e.g.
-#
-#  $ mkdir config
-#  $ mv Guardfile config/
-#  $ ln -s config/Guardfile .
-#
-# and, you'll have to watch "config/Guardfile" instead of "Guardfile"
-
-# Note: The cmd option is now required due to the increasing number of ways
-#       rspec may be run, below are examples of the most common uses.
-#  * bundler: 'bundle exec rspec'
-#  * bundler binstubs: 'bin/rspec'
-#  * spring: 'bin/rspec' (This will use spring if running and you have
-#                          installed the spring binstubs per the docs)
-#  * zeus: 'zeus rspec' (requires the server to be started separately)
-#  * 'just' rspec: 'rspec'
-
-guard :rspec, cmd: 'bundle exec rspec -f d' do
+guard :rspec, cmd: 'bundle exec rspec -f d', clearing: :on do
   require 'guard/rspec/dsl'
   dsl = Guard::RSpec::Dsl.new(self)
-
-  # Feel free to open issues for suggestions and improvements
 
   # RSpec files
   rspec = dsl.rspec
@@ -58,9 +30,8 @@ guard :rspec, cmd: 'bundle exec rspec -f d' do
   watch(rails.routes)          { "#{rspec.spec_dir}/routing" }
   watch(rails.app_controller)  { "#{rspec.spec_dir}/controllers" }
 
-  # Capybara features specs
-  watch(rails.view_dirs)     { |m| rspec.spec.call("features/#{m[1]}") }
-  watch(rails.layouts)       { |m| rspec.spec.call("features/#{m[1]}") }
+  watch(rails.view_dirs)     { |m| rspec.spec.call("controllers/#{m[1]}") }
+  watch(rails.layouts)       { |m| rspec.spec.call("controllers/#{m[1]}") }
 
   # Turnip features and steps
   watch(%r{^spec/acceptance/(.+)\.feature$})
@@ -69,8 +40,8 @@ guard :rspec, cmd: 'bundle exec rspec -f d' do
   end
 end
 
-# guard :rubocop do
+# guard :rubocop, all_on_start: false do
 #   watch(%r{app/.+\.rb$})
 #   watch(%r{spec/.+\.rb$})
-#   watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
+#   # watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
 # end

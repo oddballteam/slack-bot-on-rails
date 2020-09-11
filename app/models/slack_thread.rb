@@ -8,7 +8,9 @@ class SlackThread < ApplicationRecord
     message_ts = data.thread_ts || data.ts
     permalink = permalink_for(client: client, channel: channel, message_ts: message_ts)
     started_at = datetime_from_message_ts(message_ts: message_ts)
-    self.new(channel: channel, permalink: permalink, slack_ts: message_ts, started_at: started_at)
+    find_by(slack_ts: message_ts) || new(
+      channel: channel, permalink: permalink, slack_ts: message_ts, started_at: started_at
+    )
   end
 
   def self.permalink_for(client:, channel:, message_ts:)
@@ -16,7 +18,7 @@ class SlackThread < ApplicationRecord
     response&.permalink
   end
 
-  # Move this into React?
+  # Move this into a view?
   def now_tracking
     <<~EOS
       Now tracking <#{permalink}|this thread>,
