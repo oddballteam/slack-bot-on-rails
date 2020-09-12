@@ -30,4 +30,28 @@ class SlackThread < ApplicationRecord
       which started at #{ I18n.l(started_at, format: :long) }.
     EOS
   end
+
+  def latest_replies
+    limit = 100
+    oldest = @last_slack_ts
+
+    response = slack.conversations_replies(
+      channel: channel, ts: slack_ts, limit: limit, oldest: oldest, inclusive: true
+    )
+
+    return [] unless response.ok?
+
+    if response.has_more?
+      @last_slack_ts = response.messages.first.ts
+      latest_replies
+    else
+      response.messages
+    end
+  end
+
+  private
+
+  def slack
+    @slack ||= Slack::Web::Client.new
+  end
 end
