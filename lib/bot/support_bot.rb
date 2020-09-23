@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'net/http'
 require 'uri'
+require 'active_support/core_ext/string'
 
 class SupportBot < SlackRubyBot::Bot
   help do
@@ -24,21 +25,43 @@ class SupportBot < SlackRubyBot::Bot
     end
   end
 
-  command 'track' do |client, data, match|
-    thread = SlackThread.from_command(client: client, data: data)
+  command 'byebug' do |client, data, match|
+    slack_thread = SlackThread.from_command(client: client, data: data)
 
-    text = if thread.persisted?
-            'This thread is already being tracked. :smiel:'
-           elsif thread.save
-            thread.now_tracking
+    client.say(
+      channel: slack_thread.channel,
+      text: 'Debugging session started…',
+      thread_ts: slack_thread.slack_ts
+    )
+
+    byebug
+
+    client.say(
+      channel: slack_thread.channel,
+      text: 'Debugging session finished.',
+      thread_ts: slack_thread.slack_ts
+    )
+  end
+
+  command 'track' do |client, data, match|
+    slack_thread = SlackThread.from_command(client: client, data: data)
+
+    thread_link = -> {
+      "<#{Rails.application.routes.url_helpers.thread_url(slack_thread.id, host: 'localhost:3000')}|this thread>"
+    }
+
+    text = if slack_thread.persisted?
+            "#{thread_link.call.capitalize} is already being tracked. :white_check_mark:"
+           elsif slack_thread.save
+            "Now tracking #{thread_link.call}. :white_check_mark:"
            else
-            thread.errors.full_messages.join('. ')
+            ':shrug: There were errors. ' + slack_thread.errors.full_messages.join('. ')
            end
 
     client.say(
-      channel: thread.channel,
+      channel: slack_thread.channel,
       text: text,
-      thread_ts: thread.slack_ts
+      thread_ts: slack_thread.slack_ts
     )
   end
 

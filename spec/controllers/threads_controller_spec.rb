@@ -4,16 +4,7 @@ RSpec.describe ThreadsController do
       let(:thread) { SlackThread.new }
       let(:threads) { [thread] }
 
-      before do
-        allow(SlackThread).to receive(:all) { threads }
-      end
-
-      context '.html' do
-        it 'responds with HTML' do
-          get :index, as: :html
-          expect(response).to render_template('index')
-        end
-      end
+      before { allow(SlackThread).to receive(:all) { threads } }
 
       context '.json' do
         it 'responds with JSON' do
@@ -33,6 +24,16 @@ RSpec.describe ThreadsController do
         get :index, params: { from: last_month.iso8601, to: this_month.iso8601 }, as: :json
         expect(response.body).to eq(last_months_threads.to_json)
       end
+    end
+  end
+
+  describe 'GET /:id' do
+    let(:thread) { SlackThread.new() }
+    before { allow(SlackThread).to receive(:find).with('123') { thread } }
+
+    it 'responds with HTML' do
+      get :show, params: { id: 123 }, as: :json
+      expect(response.body).to eq(thread.to_json)
     end
   end
 end

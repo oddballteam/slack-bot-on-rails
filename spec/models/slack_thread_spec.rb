@@ -80,57 +80,48 @@ RSpec.describe SlackThread do
     end
   end
 
-  describe '#now_tracking' do
-    subject { thread.now_tracking }
-    it { is_expected.to include(permalink) }
-    it { is_expected.to include(I18n.l(started_at, format: :long)) }
-  end
+  # describe '#slack_last_ts' do
+  #   subject { thread.slack_last_ts }
+  #   let(:first_slack_ts) { '1482960137.003542' }
+  #   let(:last_slack_ts) { '1482960137.003543' }
 
-  describe '#latest_replies' do
-    subject { thread.latest_replies }
-    let(:first_page) do
-      double(
-        'Messages Page 1',
-        ok?: true,
-        has_more?: true,
-        messages: [double('First', ts: '1482960137.003542')]
-      )
-    end
-    let(:last_page) do
-      double(
-        'Messages Page 2',
-        ok?: true,
-        has_more?: false,
-        messages: [double('Last', ts: '1482960137.003543')]
-      )
-    end
+  #   # mock Slack web API responses
+  #   let(:first_page) do
+  #     double(
+  #       'Messages Page 1',
+  #       ok?: true,
+  #       has_more?: has_more,
+  #       messages: [double('First', ts: first_slack_ts)]
+  #     )
+  #   end
+  #   let(:last_page) do
+  #     double(
+  #       'Messages Page 2',
+  #       ok?: true,
+  #       has_more?: false,
+  #       messages: [double('Last', ts: last_slack_ts)]
+  #     )
+  #   end
 
-    before do
-      allow_any_instance_of(Slack::Web::Client).to receive(:conversations_replies).with(hash_including(
-        oldest: nil, channel: thread.channel, ts: thread.slack_ts, inclusive: true
-      )).and_return(first_page)
-      allow_any_instance_of(Slack::Web::Client).to receive(:conversations_replies).with(hash_including(
-        oldest: first_page.messages.first.ts, channel: thread.channel, ts: thread.slack_ts, inclusive: true
-      )).and_return(last_page)
-    end
+  #   before do
+  #     allow_any_instance_of(Slack::Web::Client).to receive(:conversations_replies).with(hash_including(
+  #       oldest: nil, channel: thread.channel, ts: thread.slack_ts, inclusive: true
+  #     )).and_return(first_page)
+  #     allow_any_instance_of(Slack::Web::Client).to receive(:conversations_replies).with(hash_including(
+  #       oldest: first_page.messages.first.ts, channel: thread.channel, ts: thread.slack_ts, inclusive: true
+  #     )).and_return(last_page)
+  #   end
 
-    context 'one results page' do
-      let(:first_page) do
-        double(
-          'Messages Single Page',
-          ok?: true,
-          has_more?: false,
-          messages: [double('First', ts: '1482960137.003542')]
-        )
-      end
+  #   context 'one results page' do
+  #     let(:has_more) { false }
+  #     it { is_expected.to eq(first_page.messages) }
+  #   end
 
-      it { is_expected.to eq(first_page.messages) }
-    end
-
-    context 'multiple results pages' do
-      it { is_expected.to eq(last_page.messages) }
-    end
-  end
+  #   context 'multiple results pages' do
+  #     let(:has_more) { true }
+  #     it { is_expected.to eq(last_slack_ts) }
+  #   end
+  # end
 end
 
 class MockSlackClient

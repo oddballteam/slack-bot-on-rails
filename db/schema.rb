@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_11_172239) do
+ActiveRecord::Schema.define(version: 2020_09_16_192837) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2020_09_11_172239) do
     t.string "channel"
     t.string "slack_ts"
     t.string "permalink"
+    t.string "started_by"
   end
 
   create_table "taggings", id: :serial, force: :cascade do |t|

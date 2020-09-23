@@ -23,13 +23,9 @@ class SlackThread < ApplicationRecord
     response&.permalink
   end
 
-  # Move this into a view?
-  def now_tracking
-    <<~EOS
-      Now tracking <#{permalink}|this thread>,
-      which started at #{ I18n.l(started_at, format: :long) }.
-    EOS
-  end
+  # def last_slack_ts
+  #   last_slack_ts
+  # end
 
   def latest_replies
     limit = 100
@@ -47,6 +43,18 @@ class SlackThread < ApplicationRecord
     else
       response.messages
     end
+  end
+
+  def first_message
+    limit = 1
+
+    response = slack.conversations_replies(
+      channel: channel, ts: slack_ts, limit: limit, inclusive: true
+    )
+
+    return [] unless response.ok?
+
+    response.messages
   end
 
   private
