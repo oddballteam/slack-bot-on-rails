@@ -27,3 +27,7 @@ test:
 production:
   <<: *default
   database: slackbot_production
+
+production:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
