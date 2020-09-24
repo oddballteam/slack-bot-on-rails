@@ -46,8 +46,10 @@ class SupportBot < SlackRubyBot::Bot
   command 'track' do |client, data, match|
     slack_thread = SlackThread.from_command(client: client, data: data)
 
+    host = ENV['HEROKU_APP_NAME'] || 'localhost:3000'
+
     thread_link = -> {
-      "<#{Rails.application.routes.url_helpers.thread_url(slack_thread.id, host: 'localhost:3000')}|this thread>"
+      "<#{Rails.application.routes.url_helpers.thread_url(slack_thread.id, host: host)}|this thread>"
     }
 
     text = if slack_thread.persisted?

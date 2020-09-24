@@ -4,7 +4,6 @@ class ThreadsController < ApplicationController
       format.json { render json: slack_threads }
       format.html do
         render component: 'threads/List',
-              #  props: MapSerializer.render_as_hash(map),
                tag: 'div',
                prerender: false
       end
