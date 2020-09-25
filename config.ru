@@ -1,6 +1,9 @@
 # This file is used by Rack-based servers to start the application.
 
+require 'dotenv'
 require_relative 'config/environment'
+Dotenv.load(File.join(Rails.root, '.env'))
+
 require_relative 'lib/bot/support_bot'
 
 Thread.abort_on_exception = true

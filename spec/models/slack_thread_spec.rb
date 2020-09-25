@@ -59,9 +59,9 @@ RSpec.describe SlackThread do
 
   context 'date queries' do
     let(:last_month) { 1.month.ago.to_date }
-    let(:last_months_threads) { [ SlackThread.create(started_at: last_month) ] }
+    let(:last_months_threads) { [ FactoryBot.create(:slack_thread, started_at: last_month) ] }
     let(:this_month) { Date.today }
-    let(:this_months_threads) { [ SlackThread.create(started_at: this_month) ] }
+    let(:this_months_threads) { [ FactoryBot.create(:slack_thread, started_at: this_month) ] }
     let(:threads) { last_months_threads + last_months_threads }
 
     describe '.after(this_month)' do
