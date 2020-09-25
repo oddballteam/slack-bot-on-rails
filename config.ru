@@ -2,7 +2,7 @@
 
 require 'dotenv'
 require_relative 'config/environment'
-Dotenv.load(File.join(Rails.root, '.env'))
+Dotenv.load(File.join(Rails.root, '.env')) unless Rails.env.production?
 
 require_relative 'lib/bot/support_bot'
 

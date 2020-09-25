@@ -46,4 +46,12 @@ RSpec.describe TeamsController, type: :request do
       its(:body) { is_expected.to eq errors.to_json }
     end
   end
+
+  describe 'GET /teams/new' do
+    before do
+      get '/teams/new'
+    end
+
+    it { is_expected.to have_http_status(:ok) }
+  end
 end
