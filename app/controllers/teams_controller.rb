@@ -1,13 +1,16 @@
+# frozen_string_literal: true
+
 class TeamsController < ApplicationController
   def index
     render json: Team.all
   end
 
-  def new
-  end
+  def new; end
 
   def create
-    raise 'Missing SLACK_CLIENT_ID or SLACK_CLIENT_SECRET.' unless ENV.key?('SLACK_CLIENT_ID') && ENV.key?('SLACK_CLIENT_SECRET')
+    unless ENV.key?('SLACK_CLIENT_ID') && ENV.key?('SLACK_CLIENT_SECRET')
+      raise 'Missing SLACK_CLIENT_ID or SLACK_CLIENT_SECRET.'
+    end
 
     client = Slack::Web::Client.new
     oauth = client.oauth_access(

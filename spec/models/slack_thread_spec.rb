@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 RSpec.describe SlackThread do
   subject(:thread) { SlackThread.from_command(client: client, data: data) }
 
   let(:client) { double('Client', web_client: MockSlackClient.new) }
   let(:data) { build_stubbed(:slack_command) }
-  let(:started_at) { Time.parse("2020-09-04 18:59:53 UTC") } # thread_ts as UTC date
+  let(:started_at) { Time.parse('2020-09-04 18:59:53 UTC') } # thread_ts as UTC date
   let(:permalink) { 'https://example.com/' }
 
   context 'an untracked thread' do
     context 'from channel' do
       let(:data) { build(:slack_command, thread_ts: nil) }
-      let(:started_at) { Time.parse("2020-09-04 19:32:36 UTC") } # ts as UTC date
+      let(:started_at) { Time.parse('2020-09-04 19:32:36 UTC') } # ts as UTC date
 
       describe '#started_at' do
         subject { thread.started_at }
@@ -59,10 +61,10 @@ RSpec.describe SlackThread do
 
   context 'date queries' do
     let(:last_month) { 1.month.ago.to_date }
-    let(:last_months_threads) { [ FactoryBot.create(:slack_thread, started_at: last_month) ] }
+    let(:last_months_threads) { [FactoryBot.create(:slack_thread, started_at: last_month)] }
     let(:this_month) { Date.today }
-    let(:this_months_threads) { [ FactoryBot.create(:slack_thread, started_at: this_month) ] }
-    let(:threads) { last_months_threads + last_months_threads }
+    let(:this_months_threads) { [FactoryBot.create(:slack_thread, started_at: this_month)] }
+    let(:threads) { last_months_threads.concat(last_months_threads) }
 
     describe '.after(this_month)' do
       subject { SlackThread.after(this_month) }
@@ -125,10 +127,12 @@ RSpec.describe SlackThread do
 end
 
 class MockSlackClient
+  # mock client getPermalink
   def chat_getPermalink(channel:, message_ts:)
     self
   end
 
+  # mock permalink
   def permalink
     'https://example.com/'
   end

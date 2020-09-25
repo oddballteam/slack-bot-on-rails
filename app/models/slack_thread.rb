@@ -1,11 +1,15 @@
+# frozen_string_literal: true
+
 class SlackThread < ApplicationRecord
   acts_as_taggable_on :category
 
-  scope :after, ->(date) { where("started_at >= ?", date) }
-  scope :before, ->(date) { where("started_at < ?", date) }
+  scope :after, ->(date) { where('started_at >= ?', date) }
+  scope :before, ->(date) { where('started_at < ?', date) }
 
   def self.datetime_from_message_ts(message_ts:, default: DateTime.now)
-    Time.at(message_ts.split('.').first.to_i) rescue default
+    Time.at(message_ts.split('.').first.to_i)
+  rescue StandardError
+    default
   end
 
   def self.from_command(client:, data:)

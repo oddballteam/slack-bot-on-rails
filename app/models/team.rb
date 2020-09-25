@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Team < ApplicationRecord
   scope :active, -> { where(active: true) }
 
@@ -19,7 +21,7 @@ class Team < ApplicationRecord
     team ||= Team.find_by(team_id: team_id)
 
     if team && !team.active?
-      team.update_attributes!(
+      team.update(
         active: true, access_token: access_token, bot_access_token: bot_access_token
       )
     else

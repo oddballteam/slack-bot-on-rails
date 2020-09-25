@@ -1,0 +1,35 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  Exclude:
+    - 'bin/*'
+    - 'config/puma.rb'
+    - 'db/schema.rb'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+
+Metrics/BlockLength:
+  Exclude:
+      - 'Guardfile'
+      - 'spec/**/*'
+
+Metrics/MethodLength:
+  Exclude:
+    - 'db/migrate/*'
+
+Style/Documentation:
+  Exclude:
+    - 'app/controllers/application_controller.rb'
+    - 'app/helpers/*'
+    - 'app/mailers/application_mailer.rb'
+    - 'app/models/application_record.rb'
+    - 'app/serializers/**/*'
+    - 'config/application.rb'
+    - 'db/migrate/*'
+    - 'spec/**/*'
+
+Style/DocumentationMethod:
+  Enabled: true
+  Exclude:
+    - 'db/migrate/*'
+    - 'app/controllers/**/*'

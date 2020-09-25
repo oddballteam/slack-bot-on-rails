@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'net/http'
 require 'uri'
 require 'active_support/core_ext/string'
@@ -25,39 +26,21 @@ class SupportBot < SlackRubyBot::Bot
     end
   end
 
-  command 'byebug' do |client, data, match|
-    slack_thread = SlackThread.from_command(client: client, data: data)
-
-    client.say(
-      channel: slack_thread.channel,
-      text: 'Debugging session started…',
-      thread_ts: slack_thread.slack_ts
-    )
-
-    byebug
-
-    client.say(
-      channel: slack_thread.channel,
-      text: 'Debugging session finished.',
-      thread_ts: slack_thread.slack_ts
-    )
-  end
-
-  command 'track' do |client, data, match|
+  command 'track' do |client, data, _match|
     slack_thread = SlackThread.from_command(client: client, data: data)
 
     host = ENV['HEROKU_APP_NAME'] ? "#{ENV['HEROKU_APP_NAME']}.herokuapp.com" : 'localhost:3000'
 
-    thread_link = -> {
+    thread_link = lambda {
       "<#{Rails.application.routes.url_helpers.thread_url(slack_thread.id, host: host)}|this thread>"
     }
 
     text = if slack_thread.persisted?
-            "#{thread_link.call.capitalize} is already being tracked. :white_check_mark:"
+             "#{thread_link.call.capitalize} is already being tracked. :white_check_mark:"
            elsif slack_thread.save
-            "Now tracking #{thread_link.call}. :white_check_mark:"
+             "Now tracking #{thread_link.call}. :white_check_mark:"
            else
-            ':shrug: There were errors. ' + slack_thread.errors.full_messages.join('. ')
+             ":shrug: There were errors. #{slack_thread.errors.full_messages.join('. ')}"
            end
 
     client.say(
@@ -74,9 +57,9 @@ class SupportBot < SlackRubyBot::Bot
     thread.category_list.add(category)
 
     text = if thread.save
-            "#{category} added. Categories: #{thread.category_list}."
+             "#{category} added. Categories: #{thread.category_list}."
            else
-            thread.errors.full_messages.join('. ')
+             thread.errors.full_messages.join('. ')
            end
 
     client.say(
@@ -93,9 +76,9 @@ class SupportBot < SlackRubyBot::Bot
     thread.category_list.remove(category)
 
     text = if thread.save
-            "#{category} removed. Categories: #{thread.category_list}."
+             "#{category} removed. Categories: #{thread.category_list}."
            else
-            thread.errors.full_messages.join('. ')
+             thread.errors.full_messages.join('. ')
            end
 
     client.say(
@@ -105,7 +88,7 @@ class SupportBot < SlackRubyBot::Bot
     )
   end
 
-  command 'categories', 'list categories' do |client, data, match|
+  command 'categories', 'list categories' do |client, data, _match|
     thread = SlackThread.from_command(client: client, data: data)
 
     client.say(
