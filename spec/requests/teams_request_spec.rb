@@ -29,7 +29,7 @@ RSpec.describe TeamsController, type: :request do
 
     context 'success' do
       before do
-        post '/teams', params: { code: 'ABC123' }
+        get '/teams/create', params: { code: 'ABC123' }
       end
 
       it { is_expected.to have_http_status(:created) }
@@ -41,7 +41,7 @@ RSpec.describe TeamsController, type: :request do
 
       before do
         allow(team).to receive(:errors) { ['bad ideas'] }
-        post '/teams', params: { code: 'ABC123' }
+        get '/teams/create', params: { code: 'ABC123' }
       end
 
       it { is_expected.to have_http_status(:unprocessable_entity) }

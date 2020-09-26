@@ -19,6 +19,8 @@ class TeamsController < ApplicationController
       code: params.require(:code) # from Slack redirect?
     )
 
+    Rails.logger.info("Oauth response: #{oauth.inspect} #{oauth}")
+
     team = Team.from_oauth(oauth)
 
     if team.errors.empty?
