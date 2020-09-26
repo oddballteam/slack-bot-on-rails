@@ -2,6 +2,8 @@
 
 # record events from the Slack Events API, for future processing
 class EventsController < ApplicationController
+  skip_forgery_protection only: %i[create]
+
   def create
     render json: { challenge: params[:challenge] } if url_verification?
   end
