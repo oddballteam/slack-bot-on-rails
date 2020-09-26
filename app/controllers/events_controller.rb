@@ -5,7 +5,16 @@ class EventsController < ApplicationController
   skip_forgery_protection only: %i[create]
 
   def create
-    render json: { challenge: params[:challenge] } if url_verification?
+    if url_verification?
+      render json: { challenge: params[:challenge] }
+    else
+      event = SlackEvent.new(metadata: params.permit!)
+      if event.save
+        render json: event, status: :created
+      else
+        render json: event.errors, status: :unprocessable_entity
+      end
+    end
   end
 
   private

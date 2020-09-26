@@ -23,7 +23,7 @@ RSpec.describe EventsController, type: :request do
     # HTTP 200 OK
     # Content-type: application/json
     # {"challenge":"3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P"}
-    context 'validate origin' do
+    context 'origin challenge & validation' do
       let(:challenge) { '3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P' }
       let(:params) do
         {
@@ -42,6 +42,17 @@ RSpec.describe EventsController, type: :request do
 
       it { is_expected.to have_http_status(:ok) }
       its(:body) { is_expected.to eq json }
+    end
+
+    context 'app_mention' do
+      let(:event) { FactoryBot.build(:slack_event, :app_mention) }
+
+      before do
+        post '/events', params: event.metadata.to_json
+      end
+
+      it { is_expected.to have_http_status(:created) }
+      its(:body) { is_expected.to include 'app_mention' }
     end
   end
 end
