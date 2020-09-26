@@ -22,7 +22,7 @@ class TeamsController < ApplicationController
     }
     Rails.logger.info("Oauth params: #{oauth_params.inspect} #{oauth_params}")
 
-    oauth = client.oauth_access(oauth_params)
+    oauth = client.oauth_v2_access(oauth_params)
 
     Rails.logger.info("Oauth response: #{oauth.inspect} #{oauth}")
 
