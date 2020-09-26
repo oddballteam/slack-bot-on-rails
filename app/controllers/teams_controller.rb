@@ -15,11 +15,14 @@ class TeamsController < ApplicationController
     end
 
     client = Slack::Web::Client.new
-    oauth = client.oauth_access(
+    oauth_params = {
       client_id: ENV['SLACK_CLIENT_ID'],
       client_secret: ENV['SLACK_CLIENT_SECRET'],
-      code: params.require(:code) # from Slack redirect?
-    )
+      code: params.require(:code) # from Slack redirect
+    }
+    Rails.logger.info("Oauth params: #{oauth_params.inspect} #{oauth_params}")
+
+    oauth = client.oauth_access(oauth_params)
 
     Rails.logger.info("Oauth response: #{oauth.inspect} #{oauth}")
 
