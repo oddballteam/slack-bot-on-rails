@@ -128,7 +128,7 @@ end
 
 class MockSlackClient
   # mock client getPermalink
-  def chat_getPermalink(channel:, message_ts:)
+  def chat_getPermalink(channel:, message_ts:) # rubocop:disable Naming/MethodName
     self
   end
 

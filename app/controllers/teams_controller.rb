@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Create Slack Teams as they install the application
 class TeamsController < ApplicationController
   def index
     render json: Team.all
@@ -7,6 +8,7 @@ class TeamsController < ApplicationController
 
   def new; end
 
+  # Create Slack Teams as they install the application
   def create
     unless ENV.key?('SLACK_CLIENT_ID') && ENV.key?('SLACK_CLIENT_SECRET')
       raise 'Missing SLACK_CLIENT_ID or SLACK_CLIENT_SECRET.'
@@ -21,7 +23,7 @@ class TeamsController < ApplicationController
 
     Rails.logger.info("Oauth response: #{oauth.inspect} #{oauth}")
 
-    team = Team.from_oauth(oauth)
+    team = Team.create_or_update_from_oauth(oauth)
 
     if team.errors.empty?
       render json: team, status: :created

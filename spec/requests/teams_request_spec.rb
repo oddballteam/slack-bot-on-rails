@@ -24,7 +24,7 @@ RSpec.describe TeamsController, type: :request do
     before do
       allow(Slack::Web::Client).to receive(:new) { client }
       allow(client).to receive(:oauth_access) { oauth }
-      allow(Team).to receive(:from_oauth).with(oauth) { team }
+      allow(Team).to receive(:create_or_update_from_oauth).with(oauth) { team }
     end
 
     context 'success' do

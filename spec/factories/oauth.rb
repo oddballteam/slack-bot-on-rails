@@ -2,10 +2,19 @@
 
 FactoryBot.define do
   factory :oauth, class: OpenStruct do
-    access_token { 'ACC123' }
-    bot { { 'bot_access_token' => 'BOT456' } }
-    team_id { 'OUTLAND' }
-    team_name { 'Bill The Cat' }
-    user_id { 'HEINZ' }
+    access_token { 'xoxb-1234567' }
+    bot_user_id { 'U0KRQLJ9H' }
+    team do
+      {
+        'name' => 'Slack Softball Team',
+        'id' => 'T9TK3CUKW'
+      }
+    end
+    authed_user do
+      {
+        'id' => 'U1234',
+        'access_token' => 'xoxp-1234'
+      }
+    end
   end
 end

@@ -2,9 +2,12 @@
 
 FactoryBot.define do
   factory :team do
-    access_token { 'ACC111' }
-    bot_access_token { 'BOT999' }
-    team_id { 'HIGHLAND' }
+    access_token { 'xoxb-4567890' }
+    bot_user_id { 'U0KRQLJ4H' }
+    name { 'Slack Soccer Team' }
+    team_id { 'T9TK3CAKE' }
+    user_access_token { 'xoxp-5678' }
+    user_id { 'U5678' }
 
     trait :inactive do
       active { false }

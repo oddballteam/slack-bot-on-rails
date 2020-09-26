@@ -54,10 +54,9 @@ ActiveRecord::Schema.define(version: 2020_09_24_162902) do
   create_table "teams", force: :cascade do |t|
     t.string "team_id"
     t.string "name"
-    t.string "domain"
-    t.string "bot_access_token"
-    t.string "bot_user_id"
     t.string "access_token"
+    t.string "bot_user_id"
+    t.string "user_access_token"
     t.string "user_id"
     t.boolean "active", default: true
     t.datetime "created_at", precision: 6, null: false

@@ -4,6 +4,7 @@ require 'net/http'
 require 'uri'
 require 'active_support/core_ext/string'
 
+# Slackt real-time-chat interface, using deprecated global API token
 class SupportBot < SlackRubyBot::Bot
   help do
     title 'Support Bot'

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# list and show details about tracked Slack threads
 class ThreadsController < ApplicationController
   def index
     respond_to do |format|
