@@ -26,7 +26,6 @@ RSpec.describe Team, type: :model do
       let(:errors) do
         [
           'Access token has already been used',
-          'User access token has already been used',
           'Team is already registered'
         ]
       end

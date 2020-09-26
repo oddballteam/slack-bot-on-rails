@@ -8,8 +8,6 @@ class Team < ApplicationRecord
   validates_presence_of :access_token
   validates_presence_of :team_id
   validates_uniqueness_of :team_id, message: 'is already registered'
-  validates_uniqueness_of :user_access_token, message: 'has already been used'
-  validates_presence_of :user_access_token
 
   # creates or updates a Slack Team that has OAuth'd this application
   def self.create_or_update_from_oauth(response)
