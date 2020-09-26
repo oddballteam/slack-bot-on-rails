@@ -6,5 +6,6 @@ FactoryBot.define do
     bot { { 'bot_access_token' => 'BOT456' } }
     team_id { 'OUTLAND' }
     team_name { 'Bill The Cat' }
+    user_id { 'HEINZ' }
   end
 end

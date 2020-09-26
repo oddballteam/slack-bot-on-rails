@@ -7,6 +7,7 @@ RSpec.describe Team, type: :model do
   let(:bot_access_token) { oauth['bot']['bot_access_token'] }
   let(:team_id) { oauth['team_id'] }
   let(:team_name) { oauth['team_name'] }
+  let(:user_id) { oauth['user_id'] }
   let(:oauth) { FactoryBot.attributes_for(:oauth).with_indifferent_access }
 
   describe '.from_oauth' do
@@ -16,6 +17,7 @@ RSpec.describe Team, type: :model do
     its(:bot_access_token) { is_expected.to eq bot_access_token }
     its(:team_id) { is_expected.to eq team_id }
     its(:name) { is_expected.to eq team_name }
+    its(:user_id) { is_expected.to eq user_id }
     its(:valid?) { is_expected.to be true }
 
     context 'duplicate tokens' do

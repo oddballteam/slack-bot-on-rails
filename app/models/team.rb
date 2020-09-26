@@ -15,6 +15,7 @@ class Team < ApplicationRecord
     bot_access_token = response['bot']['bot_access_token']
     team_id = response['team_id']
     team_name = response['team_name']
+    user_id = response['user_id']
 
     team = Team.find_by(access_token: access_token)
     team ||= Team.find_by(bot_access_token: bot_access_token)
@@ -29,7 +30,8 @@ class Team < ApplicationRecord
         access_token: access_token,
         bot_access_token: bot_access_token,
         team_id: team_id,
-        name: team_name
+        name: team_name,
+        user_id: user_id
       )
     end
 
