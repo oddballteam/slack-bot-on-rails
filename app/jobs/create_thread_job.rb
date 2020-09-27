@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# create tracked slack threads from events
 class CreateThreadJob < ApplicationJob
   # Default settings for this job. These are optional - without them, jobs
   # will default to priority 100 and run immediately.
@@ -9,27 +10,25 @@ class CreateThreadJob < ApplicationJob
   self.priority = 1
 
   def run(event_id:)
-    # get add'l thread metadata from Slack API
-    # - permalink
-    # - thread creator
-    # event = SlackEvent.find(event_id)
-    # thread = SlackThread.find_or_create_by_event(slack_ts: event.ts)
-    #
-    # SlackThread.transaction do
-    #   # Write any changes you'd like to the database.
-    #   thread.save
+    message = 'Something unexpected happened.'
+    event = SlackEvent.find(event_id)
+    slack_thread = SlackThread.find_or_initialize_by_event(event)
 
-    #   # It's best to destroy the job in the same transaction as any other
-    #   # changes you make. Que will mark the job as destroyed for you after the
-    #   # run method if you don't do it yourself, but if your job writes to the DB
-    #   # but doesn't destroy the job in the same transaction, it's possible that
-    #   # the job could be repeated in the event of a crash.
-    #   destroy
+    SlackThread.transaction do
+      message = if slack_thread.persisted?
+                  "#{slack_thread.formatted_link.capitalize} is already being tracked. :white_check_mark:"
+                elsif slack_thread.save
+                  "Now tracking #{slack_thread.formatted_link}. :white_check_mark:"
+                else
+                  ":shrug: There were errors. #{slack_thread.errors.full_messages.join('. ')}"
+                end
 
-    #   # If you'd rather leave the job record in the database to maintain a job
-    #   # history, simply replace the `destroy` call with a `finish` call.
-    # end
+      event.update(state: 'replied')
+      # destroy the job when finished
+      destroy
+    end
 
     # post message in slack thread
+    slack_thread.post_message(message)
   end
 end

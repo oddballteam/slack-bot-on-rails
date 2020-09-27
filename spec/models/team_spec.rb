@@ -3,16 +3,16 @@
 require 'rails_helper'
 
 RSpec.describe Team, type: :model do
-  let(:access_token) { oauth['access_token'] }
-  let(:bot_user_id) { oauth['bot_user_id'] }
-  let(:team_id) { oauth['team']['id'] }
-  let(:team_name) { oauth['team']['name'] }
-  let(:user_access_token) { oauth['authed_user']['access_token'] }
-  let(:user_id) { oauth['authed_user']['id'] }
-  let(:oauth) { FactoryBot.attributes_for(:oauth).with_indifferent_access }
-
   describe '.create_or_update_from_oauth' do
     subject { Team.create_or_update_from_oauth(oauth) }
+
+    let(:access_token) { oauth['access_token'] }
+    let(:bot_user_id) { oauth['bot_user_id'] }
+    let(:team_id) { oauth['team']['id'] }
+    let(:team_name) { oauth['team']['name'] }
+    let(:user_access_token) { oauth['authed_user']['access_token'] }
+    let(:user_id) { oauth['authed_user']['id'] }
+    let(:oauth) { FactoryBot.attributes_for(:oauth).with_indifferent_access }
 
     its(:access_token) { is_expected.to eq access_token }
     its(:bot_user_id) { is_expected.to eq bot_user_id }
@@ -65,5 +65,12 @@ RSpec.describe Team, type: :model do
         its(:valid?) { is_expected.to be true }
       end
     end
+  end
+
+  describe '#slack_client' do
+    subject { team.slack_client }
+    let(:team) { FactoryBot.build(:team) }
+    it { is_expected.to be_a Slack::Web::Client }
+    its(:token) { is_expected.to eq team.access_token }
   end
 end

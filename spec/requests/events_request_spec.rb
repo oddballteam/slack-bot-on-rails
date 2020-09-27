@@ -52,7 +52,6 @@ RSpec.describe EventsController, type: :request do
       end
 
       it { is_expected.to have_http_status(:created) }
-      its(:body) { is_expected.to include 'app_mention' }
     end
   end
 end

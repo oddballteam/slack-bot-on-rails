@@ -32,15 +32,15 @@ gem 'bootsnap', '>= 1.4.2', require: false
 
 # Slack bot
 gem 'acts-as-taggable-on'
-gem 'que', git: 'https://github.com/que-rb/que' # , ref: '1.0'
+gem 'que', git: 'https://github.com/que-rb/que'
 gem 'react-rails'
 gem 'slack-ruby-bot'
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv'
   gem 'factory_bot_rails'
+  gem 'faker', git: 'https://github.com/faker-ruby/faker'
+  gem 'pry'
   gem 'rails-controller-testing'
   gem 'rspec-its'
   gem 'rspec-rails'

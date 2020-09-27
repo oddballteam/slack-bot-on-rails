@@ -34,4 +34,9 @@ class Team < ApplicationRecord
 
     team
   end
+
+  # slack web client w/ token auth pre-populated
+  def slack_client
+    @slack_client ||= Slack::Web::Client.new(token: access_token) unless access_token&.blank?
+  end
 end

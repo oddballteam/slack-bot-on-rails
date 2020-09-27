@@ -327,7 +327,8 @@ CREATE TABLE public.slack_threads (
     channel character varying,
     slack_ts character varying,
     permalink character varying,
-    started_by character varying
+    started_by character varying,
+    team_id bigint
 );
 
 
@@ -579,6 +580,13 @@ ALTER TABLE ONLY public.teams
 
 
 --
+-- Name: index_slack_threads_on_team_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_slack_threads_on_team_id ON public.slack_threads USING btree (team_id);
+
+
+--
 -- Name: index_taggings_on_context; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -684,6 +692,14 @@ CREATE TRIGGER que_state_notify AFTER INSERT OR DELETE OR UPDATE ON public.que_j
 
 
 --
+-- Name: slack_threads fk_rails_27f9669033; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.slack_threads
+    ADD CONSTRAINT fk_rails_27f9669033 FOREIGN KEY (team_id) REFERENCES public.teams(id);
+
+
+--
 -- Name: taggings fk_rails_9fcd2e236b; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -709,6 +725,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200924162902'),
 ('20200926151237'),
 ('20200926203141'),
-('20200926230043');
+('20200926230043'),
+('20200927031222');
 
 
