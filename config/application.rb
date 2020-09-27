@@ -17,5 +17,8 @@ module SlackBotOnRails
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
     config.react.addons = true
+
+    # por que
+    config.active_record.schema_format = :sql
   end
 end

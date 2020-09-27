@@ -1,49 +1,36 @@
 # frozen_string_literal: true
 
 RSpec.describe SlackThread do
-  subject(:thread) { SlackThread.from_command(client: client, data: data) }
+  subject(:thread) { SlackThread.find_or_create_by_event(event) }
 
+  let(:event) { FactoryBot.create(:slack_event, :thread) }
   let(:client) { double('Client', web_client: MockSlackClient.new) }
-  let(:data) { build_stubbed(:slack_command) }
-  let(:started_at) { Time.parse('2020-09-04 18:59:53 UTC') } # thread_ts as UTC date
   let(:permalink) { 'https://example.com/' }
+  let(:started_at) { Time.parse('2018-01-08 22:12:02 UTC') } # thread_ts as UTC date
+
+  before do
+    allow(Slack::Web::Client).to receive(:new) { client }
+  end
 
   context 'an untracked thread' do
-    context 'from channel' do
-      let(:data) { build(:slack_command, thread_ts: nil) }
-      let(:started_at) { Time.parse('2020-09-04 19:32:36 UTC') } # ts as UTC date
-
-      describe '#started_at' do
-        subject { thread.started_at }
-        it { is_expected.to eq(started_at) }
-      end
-
-      describe '#slack_ts' do
-        subject { thread.slack_ts }
-        it { is_expected.to eq(data.ts) }
-      end
+    describe '#started_at' do
+      subject { thread.started_at }
+      it { is_expected.to eq(started_at) }
     end
 
-    context 'from thread' do
-      describe '#started_at' do
-        subject { thread.started_at }
-        it { is_expected.to eq(started_at) }
-      end
-
-      describe '#slack_ts' do
-        subject { thread.slack_ts }
-        it { is_expected.to eq(data.thread_ts) }
-      end
+    describe '#slack_ts' do
+      subject { thread.slack_ts }
+      it { is_expected.to eq(event.thread_ts) }
     end
   end
 
   context 'an already tracked thread' do
     subject { thread }
 
-    let(:tracked_thread) { SlackThread.from_command(client: client, data: data) }
+    let(:tracked_thread) { SlackThread.find_or_create_by_event(event) }
 
     before do
-      expect(SlackThread).to receive(:find_by).with(slack_ts: data.thread_ts).and_return(tracked_thread)
+      expect(SlackThread).to receive(:find_by).with(slack_ts: event.thread_ts).and_return(tracked_thread)
     end
 
     it { is_expected.to eq(tracked_thread) }
@@ -51,11 +38,12 @@ RSpec.describe SlackThread do
 
   describe '#channel' do
     subject { thread.channel }
-    it { is_expected.to eq(data.channel) }
+    it { is_expected.to eq(event.channel) }
   end
 
   describe '#permalink' do
     subject { thread.permalink }
+    let!(:team) { FactoryBot.create(:team, team_id: event.team) }
     it { is_expected.to eq(permalink) }
   end
 

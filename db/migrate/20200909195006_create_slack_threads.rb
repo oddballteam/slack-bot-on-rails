@@ -7,6 +7,7 @@ class CreateSlackThreads < ActiveRecord::Migration[6.0]
       t.datetime :ended_at
       t.string   :channel
       t.string   :slack_ts
+      t.string   :started_by
       t.string   :permalink
     end
   end

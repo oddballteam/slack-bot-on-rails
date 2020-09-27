@@ -32,7 +32,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 
 # Slack bot
 gem 'acts-as-taggable-on'
-gem 'celluloid-io'
+gem 'que', git: 'https://github.com/que-rb/que' # , ref: '1.0'
 gem 'react-rails'
 gem 'slack-ruby-bot'
 

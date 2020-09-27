@@ -27,9 +27,9 @@ RSpec.describe EventsController, type: :request do
       let(:challenge) { '3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P' }
       let(:params) do
         {
-          'token': 'Jhj5dZrVaK7ZwHHjRyZWjbDl',
-          'challenge': challenge,
-          'type': 'url_verification'
+          'token' => 'Jhj5dZrVaK7ZwHHjRyZWjbDl',
+          'challenge' => challenge,
+          'type' => 'url_verification'
         }
       end
       let(:json) do

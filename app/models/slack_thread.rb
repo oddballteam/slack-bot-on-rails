@@ -8,26 +8,30 @@ class SlackThread < ApplicationRecord
   scope :before, ->(date) { where('started_at < ?', date) }
 
   # convert Slack's ts format into a Rails DateTime
-  def self.datetime_from_message_ts(message_ts:, default: DateTime.now)
-    Time.at(message_ts.split('.').first.to_i)
+  def self.datetime_from_ts(ts:, default: DateTime.now)
+    Time.at(ts[0..9].to_i)
   rescue StandardError
     default
   end
 
-  # find or instantiate a thread by its timestamp
-  def self.from_command(client:, data:)
-    channel = data.channel
-    message_ts = data.thread_ts || data.ts
-    permalink = permalink_for(client: client, channel: channel, message_ts: message_ts)
-    started_at = datetime_from_message_ts(message_ts: message_ts)
-    find_by(slack_ts: message_ts) || new(
-      channel: channel, permalink: permalink, slack_ts: message_ts, started_at: started_at
+  def self.find_or_create_by_event(event)
+    # TODO: started_by
+    find_by(slack_ts: event.thread_ts) || new(
+      channel: event.channel,
+      permalink: permalink_for_event(event),
+      slack_ts: event.thread_ts,
+      started_at: datetime_from_ts(ts: event.thread_ts)
     )
   end
 
   # get the permalink for the thread
-  def self.permalink_for(client:, channel:, message_ts:)
-    response = client.web_client.chat_getPermalink(channel: channel, message_ts: message_ts)
+  def self.permalink_for_event(event)
+    team = Team.find_by(team_id: event.team)
+    return unless team&.access_token&.present?
+
+    client = Slack::Web::Client.new(token: team.access_token)
+    # client.auth_test????
+    response = client.web_client.chat_getPermalink(channel: event.channel, message_ts: event.thread_ts)
     response&.permalink
   end
 
