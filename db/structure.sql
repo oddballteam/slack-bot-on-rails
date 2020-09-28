@@ -365,8 +365,8 @@ CREATE TABLE public.slack_threads (
     reply_count integer,
     reply_users character varying,
     reply_users_count integer,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL
 );
 
 
