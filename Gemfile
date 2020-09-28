@@ -39,6 +39,7 @@ gem 'slack-ruby-bot'
 
 group :development, :test do
   gem 'dotenv'
+  gem 'factory_bot_rails'
   gem 'pry'
 end
 
@@ -52,7 +53,6 @@ group :development do
 end
 
 group :test do
-  gem 'factory_bot_rails'
   gem 'faker', git: 'https://github.com/faker-ruby/faker'
   gem 'guard-rspec'
   gem 'guard-rubocop'

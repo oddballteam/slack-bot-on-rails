@@ -11,14 +11,14 @@ RSpec.describe Team, type: :model do
     let(:slack_id) { oauth['team']['id'] }
     let(:team_name) { oauth['team']['name'] }
     let(:user_access_token) { oauth['authed_user']['access_token'] }
-    let(:user_id) { oauth['authed_user']['id'] }
+    let(:slack_user_id) { oauth['authed_user']['id'] }
     let(:oauth) { FactoryBot.attributes_for(:oauth).with_indifferent_access }
 
     its(:access_token) { is_expected.to eq access_token }
     its(:bot_user_id) { is_expected.to eq bot_user_id }
     its(:slack_id) { is_expected.to eq slack_id }
     its(:name) { is_expected.to eq team_name }
-    its(:user_id) { is_expected.to eq user_id }
+    its(:slack_user_id) { is_expected.to eq slack_user_id }
     its(:user_access_token) { is_expected.to eq user_access_token }
     its(:valid?) { is_expected.to be true }
 

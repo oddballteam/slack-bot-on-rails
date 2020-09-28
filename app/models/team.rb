@@ -27,7 +27,7 @@ class Team < ApplicationRecord
         bot_user_id: response['bot_user_id'],
         slack_id: slack_id,
         name: response.dig('team', 'name'),
-        user_id: response.dig('authed_user', 'id'),
+        slack_user_id: response.dig('authed_user', 'id'),
         user_access_token: user_access_token
       )
     end

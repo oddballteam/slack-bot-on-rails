@@ -7,7 +7,7 @@ FactoryBot.define do
     name { 'Slack Soccer Team' }
     slack_id { "T#{Faker::Alphanumeric.unique.alphanumeric(number: 8).upcase}" }
     user_access_token { 'xoxp-5678' }
-    user_id { 'U5678' }
+    slack_user_id { 'U5678' }
 
     trait :inactive do
       active { false }
