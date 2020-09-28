@@ -3,7 +3,7 @@
 class CreateTeams < ActiveRecord::Migration[6.0]
   def change
     create_table :teams do |t|
-      t.string :team_id
+      t.string :slack_id
       t.string :name
       t.string :access_token
       t.string :bot_user_id

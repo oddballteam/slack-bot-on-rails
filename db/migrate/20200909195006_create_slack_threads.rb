@@ -9,6 +9,12 @@ class CreateSlackThreads < ActiveRecord::Migration[6.0]
       t.string   :slack_ts
       t.string   :started_by
       t.string   :permalink
+      t.string   :latest_reply_ts
+      t.integer  :reply_count
+      t.string   :reply_users
+      t.integer  :reply_reply_users_count
+
+      t.timestamps
     end
   end
 end
