@@ -134,20 +134,27 @@ RSpec.describe SlackThread do
         limit: 1
       }
     end
-    let(:slack_replies) { FactoryBot.build(:slack_reply) }
     let(:thread) { FactoryBot.build(:slack_thread, :team) }
 
     before do
       allow(thread.slack_client).to receive(:conversations_replies) { slack_replies }
-      thread.update_conversation_details
     end
 
-    its(:slack_client) { is_expected.to have_received(:conversations_replies).with(args) }
-    its(:latest_reply_ts) { is_expected.to eq '1601259545.006300' }
-    its(:reply_count) { is_expected.to eq 14 }
-    its(:reply_users) { is_expected.to eq 'U01A1628SLV, U0132PA923R' }
-    its(:reply_users_count) { is_expected.to eq 2 }
-    its(:started_by) { is_expected.to eq 'U0132PA923R' }
+    context 'slack API success' do
+      let(:slack_replies) { FactoryBot.build(:slack_reply) }
+      before { thread.update_conversation_details }
+      its(:slack_client) { is_expected.to have_received(:conversations_replies).with(args) }
+      its(:latest_reply_ts) { is_expected.to eq '1601259545.006300' }
+      its(:reply_count) { is_expected.to eq 14 }
+      its(:reply_users) { is_expected.to eq 'U01A1628SLV, U0132PA923R' }
+      its(:reply_users_count) { is_expected.to eq 2 }
+      its(:started_by) { is_expected.to eq 'U0132PA923R' }
+    end
+
+    context 'slack API error: missing scope' do
+      let(:slack_replies) { raise Slack::Web::Api::Errors::MissingScope, 'missing scope' }
+      its(:update_conversation_details) { is_expected.to eq false }
+    end
   end
 
   describe '#slack_client' do

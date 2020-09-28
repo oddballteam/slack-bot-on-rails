@@ -65,5 +65,7 @@ class SlackThread < ApplicationRecord
     self.reply_users = message['reply_users'].join(', ')
     self.reply_users_count = message['reply_users_count']
     save
+  rescue Slack::Web::Api::Errors::MissingScope => e
+    false
   end
 end

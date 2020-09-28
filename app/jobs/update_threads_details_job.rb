@@ -17,8 +17,6 @@ class UpdateThreadsDetailsJob < ApplicationJob
     SlackThread.transaction do
       slack_threads.each do |slack_thread|
         slack_thread.update_conversation_details
-      rescue Slack::Web::Api::Errors::MissingScope => e
-        next
       end
       # destroy the job when finished
       destroy
