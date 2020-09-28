@@ -27,6 +27,14 @@ FactoryBot.define do
       end
     end
 
+    trait :add_link do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> add link https://www.example.com')
+        megahash
+      end
+    end
+
     trait :app_mention do
       metadata do
         megahash['event'].merge!('type' => 'app_mention')
@@ -50,6 +58,22 @@ FactoryBot.define do
       end
     end
 
+    trait :link do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> link https://www.example.com')
+        megahash
+      end
+    end
+
+    trait :links do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> links')
+        megahash
+      end
+    end
+
     trait :list_categories do
       thread
       metadata do
@@ -58,10 +82,26 @@ FactoryBot.define do
       end
     end
 
+    trait :list_links do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> list links')
+        megahash
+      end
+    end
+
     trait :remove_category do
       thread
       metadata do
         megahash['event'].merge!('text' => '<@BOT> remove category triage')
+        megahash
+      end
+    end
+
+    trait :remove_link do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> remove link https://www.test.com')
         megahash
       end
     end
@@ -78,6 +118,14 @@ FactoryBot.define do
       thread
       metadata do
         megahash['event'].merge!('text' => '<@BOT> track')
+        megahash
+      end
+    end
+
+    trait :unlink do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> unlink https://www.test.com')
         megahash
       end
     end

@@ -6,10 +6,16 @@ class SlackEvent < ApplicationRecord
 
   COMMANDS = {
     'add category' => AddThreadCategoryJob,
+    'add link' => AddThreadLinkJob,
     'categories' => ListThreadCategoriesJob,
+    'link' => AddThreadLinkJob,
+    'links' => ListThreadLinksJob,
     'list categories' => ListThreadCategoriesJob,
+    'list links' => ListThreadLinksJob,
     'remove category' => RemoveThreadCategoryJob,
-    'track' => CreateThreadJob
+    'remove link' => RemoveThreadLinkJob,
+    'track' => CreateThreadJob,
+    'unlink' => RemoveThreadLinkJob
   }.freeze
 
   # slack channel where the message was sent

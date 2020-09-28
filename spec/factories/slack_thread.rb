@@ -9,6 +9,10 @@ FactoryBot.define do
       category_list { 'one, two' }
     end
 
+    trait :links do
+      link_list { 'https://www.example.com, https://www.test.com' }
+    end
+
     trait :team do
       team
     end

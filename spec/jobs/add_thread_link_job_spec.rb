@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe AddThreadCategoryJob do
+RSpec.describe AddThreadLinkJob do
   let(:event) { FactoryBot.build_stubbed(:slack_event) }
   let(:success) { true }
   let(:thread) { FactoryBot.build_stubbed(:slack_thread) }
@@ -11,7 +11,7 @@ RSpec.describe AddThreadCategoryJob do
     expect(SlackThread).to receive(:find_or_initialize_by_event).with(event) { thread }
     expect(thread).to receive(:save) { success }
     allow(thread).to receive(:post_message)
-    AddThreadCategoryJob.run(event_id: event.id, options: 'cheese')
+    AddThreadLinkJob.run(event_id: event.id, options: 'https://www.test.com')
   end
 
   context 'save succeeds' do

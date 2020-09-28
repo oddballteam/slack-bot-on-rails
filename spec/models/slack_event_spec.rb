@@ -45,6 +45,12 @@ RSpec.describe SlackEvent, type: :model do
       it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: 'triage') }
     end
 
+    context 'add link' do
+      subject { AddThreadLinkJob }
+      let(:event) { FactoryBot.build(:slack_event, :add_link) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: 'https://www.example.com') }
+    end
+
     # context 'help' do
     #   let(:event) { FactoryBot.build(:slack_event, :help) }
     #   its(:command) { is_expected.to eq { 'help' => nil } }
@@ -57,9 +63,27 @@ RSpec.describe SlackEvent, type: :model do
       it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
     end
 
+    context 'link' do
+      subject { AddThreadLinkJob }
+      let(:event) { FactoryBot.build(:slack_event, :link) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: 'https://www.example.com') }
+    end
+
+    context 'links' do
+      subject { ListThreadLinksJob }
+      let(:event) { FactoryBot.build_stubbed(:slack_event, :links) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
+    end
+
     context 'list categories' do
       subject { ListThreadCategoriesJob }
       let(:event) { FactoryBot.build_stubbed(:slack_event, :list_categories) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
+    end
+
+    context 'list links' do
+      subject { ListThreadLinksJob }
+      let(:event) { FactoryBot.build_stubbed(:slack_event, :list_links) }
       it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
     end
 
@@ -69,10 +93,22 @@ RSpec.describe SlackEvent, type: :model do
       it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: 'triage') }
     end
 
+    context 'remove link' do
+      subject { RemoveThreadLinkJob }
+      let(:event) { FactoryBot.build(:slack_event, :remove_link) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: 'https://www.test.com') }
+    end
+
     context 'track' do
       subject { CreateThreadJob }
       let(:event) { FactoryBot.build_stubbed(:slack_event, :track) }
       it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
+    end
+
+    context 'unlink' do
+      subject { RemoveThreadLinkJob }
+      let(:event) { FactoryBot.build(:slack_event, :unlink) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: 'https://www.test.com') }
     end
 
     context 'unexpected command' do

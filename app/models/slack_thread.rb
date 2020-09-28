@@ -2,7 +2,7 @@
 
 # model for a Slack threaded conversation
 class SlackThread < ApplicationRecord
-  acts_as_taggable_on :category
+  acts_as_taggable_on :category, :link
   belongs_to :team
 
   scope :after, ->(date) { where('started_at >= ?', date) }
@@ -65,7 +65,7 @@ class SlackThread < ApplicationRecord
     self.reply_users = message['reply_users'].join(', ')
     self.reply_users_count = message['reply_users_count']
     save
-  rescue Slack::Web::Api::Errors::MissingScope => e
+  rescue Slack::Web::Api::Errors::MissingScope => _e
     false
   end
 end
