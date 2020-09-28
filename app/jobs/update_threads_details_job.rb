@@ -15,7 +15,11 @@ class UpdateThreadsDetailsJob < ApplicationJob
     slack_threads = SlackThread.where('updated_at > ?', LAST_CHANGED_AT)
 
     SlackThread.transaction do
-      slack_threads.each(&:update_conversation_details)
+      slack_threads.each do |slack_thread|
+        slack_thread.update_conversation_details
+      rescue Slack::Web::Api::Errors::MissingScope => e
+        next
+      end
       # destroy the job when finished
       destroy
     end
