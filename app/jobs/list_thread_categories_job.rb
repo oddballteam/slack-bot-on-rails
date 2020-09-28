@@ -12,11 +12,12 @@ class ListThreadCategoriesJob < ApplicationJob
   def run(event_id:)
     message = 'An unexpected error occurred. :shrug:'
     event = SlackEvent.find(event_id)
-    slack_thread = SlackThread.find_by(slack_ts: event.thread_ts)
+    slack_thread = SlackThread.find_or_initialize_by(slack_ts: event.thread_ts)
+    category_list = slack_thread.category_list.blank? ? 'None. _Yet_' : slack_thread.category_list
 
     SlackThread.transaction do
-      message = if slack_thread
-                  "Categories: #{thread.category_list || 'None. _Yet_'}. 📚"
+      message = if slack_thread.persisted?
+                  "Categories: #{category_list}. 📚"
                 else
                   'We are not tracking this thread. Tell us to track it.'
                 end

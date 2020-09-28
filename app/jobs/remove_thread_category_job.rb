@@ -18,9 +18,9 @@ class RemoveThreadCategoryJob < ApplicationJob
 
     SlackThread.transaction do
       message = if slack_thread.save
-                  "#{category} removed. Categories: #{thread.category_list}."
+                  "#{options} removed. Categories: #{slack_thread.category_list}."
                 else
-                  slack_thread.errors.full_messages.join('. ')
+                  "There were errors. #{slack_thread.errors.full_messages.join('. ')}. :shrug:"
                 end
 
       event.update(state: 'replied')

@@ -18,9 +18,9 @@ class AddThreadCategoryJob < ApplicationJob
 
     SlackThread.transaction do
       message = if slack_thread.save
-                  "#{category} added. Categories: #{slack_thread.category_list}."
+                  "#{options} added. Categories: #{slack_thread.category_list}."
                 else
-                  slack_thread.errors.full_messages.join('. ')
+                  "There were errors. #{slack_thread.errors.full_messages.join('. ')}. :shrug:"
                 end
 
       event.update(state: 'replied')

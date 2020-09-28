@@ -54,12 +54,13 @@ RSpec.describe EventsController, type: :request do
       it { is_expected.to have_http_status(:created) }
     end
 
-    # context 'errors' do
-    #   before do
-    #     post '/events'
-    #   end
+    context 'bad data' do
+      before do
+        allow_any_instance_of(SlackEvent).to receive(:save) { false }
+        post '/events'
+      end
 
-    #   it { is_expected.to have_http_status(:unprocessable_entity) }
-    # end
+      it { is_expected.to have_http_status(:unprocessable_entity) }
+    end
   end
 end

@@ -3,6 +3,12 @@
 RSpec.describe SlackThread do
   let(:thread) { FactoryBot.build_stubbed(:slack_thread) }
 
+  describe '.datetime_from_ts' do
+    subject { SlackThread.datetime_from_ts(slack_ts: 123, default: yesterday) }
+    let(:yesterday) { DateTime.yesterday }
+    it { is_expected.to eq yesterday }
+  end
+
   describe '.find_or_initialize_by_event' do
     subject(:thread) { SlackThread.find_or_initialize_by_event(event) }
 
