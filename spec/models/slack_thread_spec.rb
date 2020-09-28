@@ -3,6 +3,29 @@
 RSpec.describe SlackThread do
   let(:thread) { FactoryBot.build_stubbed(:slack_thread) }
 
+  context 'date range queries' do
+    let(:last_month) { 1.month.ago.to_date }
+    let(:last_months_threads) { [FactoryBot.create(:slack_thread, :team, started_at: last_month)] }
+    let(:this_month) { Date.today }
+    let(:this_months_threads) { [FactoryBot.create(:slack_thread, :team, started_at: this_month)] }
+    let(:threads) { last_months_threads.concat(last_months_threads) }
+
+    describe '.after(this_month)' do
+      subject { SlackThread.after(this_month) }
+      it { is_expected.to match_array(this_months_threads) }
+    end
+
+    describe '.before(this_month)' do
+      subject { SlackThread.before(this_month) }
+      it { is_expected.to match_array(last_months_threads) }
+    end
+
+    describe '.after(last_month).before(this_month)' do
+      subject { SlackThread.after(last_month).before(this_month) }
+      it { is_expected.to match_array(last_months_threads) }
+    end
+  end
+
   describe '.datetime_from_ts' do
     subject { SlackThread.datetime_from_ts(slack_ts: 123, default: yesterday) }
     let(:yesterday) { DateTime.yesterday }
@@ -80,50 +103,57 @@ RSpec.describe SlackThread do
   end
 
   describe '#post_message' do
-    subject { thread.post_message(message) }
+    subject { thread.slack_client }
 
+    let(:args) do
+      {
+        channel: thread.channel,
+        thread_ts: thread.slack_ts,
+        text: message
+      }
+    end
     let(:message) { 'Halo Whirrled' }
     let(:thread) { FactoryBot.build_stubbed(:slack_thread, :team) }
 
     before do
-      expect(thread.slack_client).to receive(:chat_postMessage).with(
-        channel: thread.channel,
-        thread_ts: thread.slack_ts,
-        text: message
-      ).and_return(message)
+      allow(thread.slack_client).to receive(:chat_postMessage)
+      thread.post_message(message)
     end
 
-    # this looks like a passthru, and it is, bc the real assertion is in the before block
-    it { is_expected.to eq message }
+    it { is_expected.to have_received(:chat_postMessage).with(args) }
+  end
+
+  describe '#update_conversation_details' do
+    subject { thread }
+
+    let(:args) do
+      {
+        channel: thread.channel,
+        ts: thread.slack_ts,
+        inclusive: true,
+        limit: 1
+      }
+    end
+    let(:slack_replies) { FactoryBot.build(:slack_reply) }
+    let(:thread) { FactoryBot.build(:slack_thread, :team) }
+
+    before do
+      allow(thread.slack_client).to receive(:conversations_replies) { slack_replies }
+      thread.update_conversation_details
+    end
+
+    its(:slack_client) { is_expected.to have_received(:conversations_replies).with(args) }
+    its(:latest_reply_ts) { is_expected.to eq '1601259545.006300' }
+    its(:reply_count) { is_expected.to eq 14 }
+    its(:reply_users) { is_expected.to eq 'U01A1628SLV, U0132PA923R' }
+    its(:reply_users_count) { is_expected.to eq 2 }
+    its(:started_by) { is_expected.to eq 'U0132PA923R' }
   end
 
   describe '#slack_client' do
     subject { thread.slack_client }
     let(:thread) { FactoryBot.create(:slack_thread, :team) }
     it { is_expected.to eq thread.team.slack_client }
-  end
-
-  context 'date queries' do
-    let(:last_month) { 1.month.ago.to_date }
-    let(:last_months_threads) { [FactoryBot.create(:slack_thread, :team, started_at: last_month)] }
-    let(:this_month) { Date.today }
-    let(:this_months_threads) { [FactoryBot.create(:slack_thread, :team, started_at: this_month)] }
-    let(:threads) { last_months_threads.concat(last_months_threads) }
-
-    describe '.after(this_month)' do
-      subject { SlackThread.after(this_month) }
-      it { is_expected.to match_array(this_months_threads) }
-    end
-
-    describe '.before(this_month)' do
-      subject { SlackThread.before(this_month) }
-      it { is_expected.to match_array(last_months_threads) }
-    end
-
-    describe '.after(last_month).before(this_month)' do
-      subject { SlackThread.after(last_month).before(this_month) }
-      it { is_expected.to match_array(last_months_threads) }
-    end
   end
 end
 

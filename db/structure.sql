@@ -328,7 +328,11 @@ CREATE TABLE public.slack_threads (
     slack_ts character varying,
     permalink character varying,
     started_by character varying,
-    team_id bigint
+    team_id bigint,
+    latest_reply_ts character varying,
+    reply_count integer,
+    reply_users character varying,
+    reply_users_count integer
 );
 
 
@@ -726,6 +730,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200926151237'),
 ('20200926203141'),
 ('20200926230043'),
-('20200927031222');
+('20200927031222'),
+('20200928030555');
 
 

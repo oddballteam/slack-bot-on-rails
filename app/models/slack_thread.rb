@@ -39,15 +39,6 @@ class SlackThread < ApplicationRecord
     response&.permalink
   end
 
-  # limited_replies = client.conversations_replies(channel: channel, ts: ts, inclusive: true, limit: 1)
-  # first_message_in_thread = limited_replies['messages'].first
-  # first_message_in_thread['latest_reply'] => ts of most recent reply
-  # ['reply_count']
-  # ['reply_users']
-  # ['reply_users_count']
-  # ['user'] => user who started the thread
-  # client.users_info(user: user_id) => name, email, avatars users
-
   # formatted link for slack messages
   def formatted_link
     host = ENV['HEROKU_APP_NAME'] ? "#{ENV['HEROKU_APP_NAME']}.herokuapp.com" : 'localhost:3000'
@@ -62,5 +53,18 @@ class SlackThread < ApplicationRecord
   # slack web client
   def slack_client
     team&.slack_client
+  end
+
+  # get the first message of the thread, which provides add'l metadata not contained in replies
+  def update_conversation_details
+    replies = slack_client.conversations_replies(channel: channel, ts: slack_ts, inclusive: true, limit: 1)
+    message = replies['messages'].first
+    self.started_by ||= message['user']
+    self.latest_reply_ts = message['latest_reply']
+    self.reply_count = message['reply_count']
+    self.reply_users = message['reply_users'].join(', ')
+    self.reply_users_count = message['reply_users_count']
+    save
+    # client.users_info(user: user_id) => name, email, avatars users
   end
 end
