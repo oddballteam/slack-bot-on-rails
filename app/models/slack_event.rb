@@ -22,9 +22,7 @@ class SlackEvent < ApplicationRecord
     COMMANDS.each do |command, job|
       next unless (matches = text&.match(/> (?<command>#{command})(\s(?<options>.*))?$/))
 
-      args = { event_id: id }
-      args.merge!(options: matches['options']) if matches['options']
-      return job.enqueue(args)
+      return job.enqueue(event_id: id, options: matches['options'])
     end
     nil
   end

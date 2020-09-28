@@ -54,13 +54,13 @@ RSpec.describe SlackEvent, type: :model do
     context 'categories' do
       subject { ListThreadCategoriesJob }
       let(:event) { FactoryBot.build_stubbed(:slack_event, :categories) }
-      it { is_expected.to have_received(:enqueue).with(event_id: event.id) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
     end
 
     context 'list categories' do
       subject { ListThreadCategoriesJob }
       let(:event) { FactoryBot.build_stubbed(:slack_event, :list_categories) }
-      it { is_expected.to have_received(:enqueue).with(event_id: event.id) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
     end
 
     context 'remove category' do
@@ -72,7 +72,7 @@ RSpec.describe SlackEvent, type: :model do
     context 'track' do
       subject { CreateThreadJob }
       let(:event) { FactoryBot.build_stubbed(:slack_event, :track) }
-      it { is_expected.to have_received(:enqueue).with(event_id: event.id) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
     end
 
     context 'unexpected command' do

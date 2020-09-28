@@ -9,7 +9,7 @@ class CreateThreadJob < ApplicationJob
   # We use the Linux priority scale - a lower number is more important.
   self.priority = 10
 
-  def run(event_id:)
+  def run(event_id:, options: nil) # rubocop:disable Lint/UnusedMethodArgument
     message = 'An unexpected error occurred. :shrug:'
     event = SlackEvent.find(event_id)
     slack_thread = SlackThread.find_or_initialize_by_event(event)
