@@ -19,6 +19,14 @@ FactoryBot.define do
 
     metadata { megahash }
 
+    trait :add_category do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> add category triage')
+        megahash
+      end
+    end
+
     trait :app_mention do
       metadata do
         megahash['event'].merge!('type' => 'app_mention')
@@ -26,9 +34,50 @@ FactoryBot.define do
       end
     end
 
+    trait :categories do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> categories')
+        megahash
+      end
+    end
+
+    trait :help do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> help')
+        megahash
+      end
+    end
+
+    trait :list_categories do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> list categories')
+        megahash
+      end
+    end
+
+    trait :remove_category do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> remove category triage')
+        megahash
+      end
+    end
+
     trait :thread do
+      app_mention
       metadata do
         megahash['event'].merge!('thread_ts' => '1515449522000008')
+        megahash
+      end
+    end
+
+    trait :track do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> track')
         megahash
       end
     end

@@ -48,10 +48,18 @@ RSpec.describe EventsController, type: :request do
       let(:event) { FactoryBot.build(:slack_event, :app_mention) }
 
       before do
-        post '/events', params: event.metadata.to_json
+        post '/events', params: event.metadata
       end
 
       it { is_expected.to have_http_status(:created) }
     end
+
+    # context 'errors' do
+    #   before do
+    #     post '/events'
+    #   end
+
+    #   it { is_expected.to have_http_status(:unprocessable_entity) }
+    # end
   end
 end

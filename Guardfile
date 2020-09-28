@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-group :specs_before_cops, halt_on_fail: true, clearing: :on do
-  guard :rspec, cmd: 'bundle exec rspec --no-profile' do
+group :specs_before_cops, halt_on_fail: true do
+  clearing :on
+  guard :rspec, cmd: 'bundle exec rspec --fail-fast --no-profile --format RspecPacmanFormatter::Pacman' do
     require 'guard/rspec/dsl'
     dsl = Guard::RSpec::Dsl.new(self)
 
@@ -43,7 +44,7 @@ group :specs_before_cops, halt_on_fail: true, clearing: :on do
     end
   end
 
-  guard :rubocop, cli: ['--auto-correct-all', '--enable-pending-cops'], all_on_start: false do
+  guard :rubocop, cli: ['--format', 'pacman', '--auto-correct-all', '--enable-pending-cops'], all_on_start: false do
     watch(/.+\.rb$/)
     watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
   end

@@ -10,7 +10,7 @@ class EventsController < ApplicationController
     else
       event = SlackEvent.new(metadata: params.permit!)
       if event.save
-        CreateThreadJob.enqueue(event_id: event.id)
+        event.enqueue_job
         head :created
       else
         head :unprocessable_entity

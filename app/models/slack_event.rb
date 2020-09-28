@@ -4,9 +4,29 @@
 class SlackEvent < ApplicationRecord
   validates_presence_of :metadata
 
+  COMMANDS = {
+    'add category' => AddThreadCategoryJob,
+    'categories' => ListThreadCategoriesJob,
+    'list categories' => ListThreadCategoriesJob,
+    'remove category' => RemoveThreadCategoryJob,
+    'track' => CreateThreadJob
+  }.freeze
+
   # slack channel where the message was sent
   def channel
     metadata&.dig('event', 'channel')
+  end
+
+  # convert chat commands the background jobs which processes them
+  def enqueue_job
+    COMMANDS.each do |command, job|
+      next unless (matches = text&.match(/> (?<command>#{command})(\s(?<options>.*))?$/))
+
+      args = { event_id: id }
+      args.merge!(options: matches['options']) if matches['options']
+      return job.enqueue(args)
+    end
+    nil
   end
 
   # event timestamp
@@ -17,6 +37,11 @@ class SlackEvent < ApplicationRecord
   # event team id
   def team
     metadata&.dig('event', 'team')
+  end
+
+  # chat text that triggered this event
+  def text
+    metadata&.dig('event', 'text')
   end
 
   # thread timestamp

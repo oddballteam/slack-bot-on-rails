@@ -27,6 +27,17 @@ RSpec.describe TeamsController, type: :request do
       allow(Team).to receive(:create_or_update_from_oauth).with(oauth) { team }
     end
 
+    context 'missing API config' do
+      before do
+        allow(ENV).to receive(:key?).with('SLACK_CLIENT_ID') { nil }
+        allow(ENV).to receive(:key?).with('SLACK_CLIENT_SECRET') { nil }
+      end
+
+      it 'raises an exception' do
+        expect { get '/teams/create' }.to raise_error('Missing SLACK_CLIENT_ID or SLACK_CLIENT_SECRET.')
+      end
+    end
+
     context 'success' do
       before do
         get '/teams/create', params: { code: 'ABC123' }

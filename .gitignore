@@ -41,3 +41,7 @@ yarn-debug.log*
 .yarn-integrity
 
 spec/examples.txt
+coverage/
+.env
+.prettierrc
+.rubocop_todo.yml

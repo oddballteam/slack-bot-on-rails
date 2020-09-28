@@ -1,18 +1,21 @@
 # frozen_string_literal: true
 
-RSpec.describe ThreadsController do
-  describe 'GET /' do
+RSpec.describe ThreadsController, type: :request do
+  describe 'GET /threads' do
     context 'mime types' do
       let(:thread) { SlackThread.new }
       let(:threads) { [thread] }
 
       before { allow(SlackThread).to receive(:all) { threads } }
 
-      context '.json' do
-        it 'responds with JSON' do
-          get :index, as: :json
-          expect(response.body).to eq(threads.to_json)
-        end
+      it 'responds with HTML' do
+        get '/threads', as: :html
+        expect(response.body).to include('data-react-class="threads/List"')
+      end
+
+      it 'responds with JSON' do
+        get '/threads', as: :json
+        expect(response.body).to eq(threads.to_json)
       end
     end
 
@@ -23,18 +26,23 @@ RSpec.describe ThreadsController do
       let!(:this_months_threads) { [FactoryBot.create(:slack_thread, :team, started_at: this_month)] }
 
       it 'responds with last month\'s threads' do
-        get :index, params: { from: last_month.iso8601, to: this_month.iso8601 }, as: :json
+        get '/threads', params: { from: last_month.iso8601, to: this_month.iso8601 }, as: :json
         expect(response.body).to eq(last_months_threads.to_json)
       end
     end
   end
 
-  describe 'GET /:id' do
+  describe 'GET /threads/:id' do
     let(:thread) { SlackThread.new }
     before { allow(SlackThread).to receive(:find).with('123') { thread } }
 
     it 'responds with HTML' do
-      get :show, params: { id: 123 }, as: :json
+      get '/threads/123', as: :html
+      expect(response.body).to include('data-react-class="threads/Edit"')
+    end
+
+    it 'responds with JSON' do
+      get '/threads/123', as: :json
       expect(response.body).to eq(thread.to_json)
     end
   end

@@ -59,6 +59,7 @@ class SlackThread < ApplicationRecord
     slack_client.chat_postMessage(channel: channel, thread_ts: slack_ts, text: message)
   end
 
+  # slack web client
   def slack_client
     team&.slack_client
   end

@@ -34,3 +34,4 @@ Style/DocumentationMethod:
   Exclude:
     - 'db/migrate/*'
     - 'app/controllers/**/*'
+    - 'app/jobs/*'
