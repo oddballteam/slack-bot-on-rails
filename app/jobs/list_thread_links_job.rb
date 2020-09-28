@@ -13,11 +13,11 @@ class ListThreadLinksJob < ApplicationJob
     message = 'An unexpected error occurred. :shrug:'
     event = SlackEvent.find(event_id)
     slack_thread = SlackThread.find_or_initialize_by(slack_ts: event.thread_ts)
-    links_list = slack_thread.link_list.blank? ? 'None. _Yet_' : "- #{slack_thread.link_list.join("\n-")}"
+    links_list = slack_thread.link_list.blank? ? 'None. _Yet_' : "- #{slack_thread.link_list.join("\n- ")}"
 
     SlackThread.transaction do
       message = if slack_thread.persisted?
-                  "Links: #{links_list}. 📚"
+                  "🔗Links: #{links_list}."
                 else
                   'We are not tracking this thread. Tell us to track it.'
                 end

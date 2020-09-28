@@ -19,7 +19,7 @@ class AddThreadLinkJob < ApplicationJob
     SlackThread.transaction do
       message = if slack_thread.save
                   <<~MESSAGE
-                    #{options} added. Links:\n-#{slack_thread.link_list.join("\n-")}.
+                    #{options} added. 🔗Links:\n- #{slack_thread.link_list.join("\n- ")}.
                   MESSAGE
                 else
                   "There were errors. #{slack_thread.errors.full_messages.join('. ')}. :shrug:"
