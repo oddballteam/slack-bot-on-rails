@@ -18,7 +18,7 @@ class SlackThread < ApplicationRecord
   # find or init thread from SlackEvent
   def self.find_or_initialize_by_event(event)
     # TODO: started_by
-    team = Team.find_by(team_id: event.team)
+    team = Team.find_by(slack_id: event.team)
     find_by(slack_ts: event.thread_ts) || new(
       channel: event.channel,
       permalink: permalink_for_event(event),
@@ -30,7 +30,7 @@ class SlackThread < ApplicationRecord
 
   # get the permalink for the thread
   def self.permalink_for_event(event)
-    team = Team.find_by(team_id: event.team)
+    team = Team.find_by(slack_id: event.team)
     return unless team&.access_token&.present?
 
     client = Slack::Web::Client.new(token: team.access_token)
@@ -65,6 +65,5 @@ class SlackThread < ApplicationRecord
     self.reply_users = message['reply_users'].join(', ')
     self.reply_users_count = message['reply_users_count']
     save
-    # client.users_info(user: user_id) => name, email, avatars users
   end
 end

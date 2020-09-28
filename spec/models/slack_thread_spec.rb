@@ -76,14 +76,14 @@ RSpec.describe SlackThread do
 
     describe '#permalink' do
       subject { thread.permalink }
-      let!(:team) { FactoryBot.create(:team, team_id: event.team) }
+      let!(:team) { FactoryBot.create(:team, slack_id: event.team) }
       it { is_expected.to eq(permalink) }
     end
 
     describe '#team' do
       subject { thread.team }
-      let!(:team) { FactoryBot.create(:team, team_id: event.team) }
-      its(:team_id) { is_expected.to eq event.team }
+      let!(:team) { FactoryBot.create(:team, slack_id: event.team) }
+      its(:slack_id) { is_expected.to eq event.team }
     end
   end
 

@@ -430,7 +430,7 @@ ALTER SEQUENCE public.tags_id_seq OWNED BY public.tags.id;
 
 CREATE TABLE public.teams (
     id bigint NOT NULL,
-    team_id character varying,
+    slack_id character varying,
     name character varying,
     access_token character varying,
     bot_user_id character varying,
@@ -731,6 +731,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200926203141'),
 ('20200926230043'),
 ('20200927031222'),
-('20200928030555');
+('20200928030555'),
+('20200928154004');
 
 
