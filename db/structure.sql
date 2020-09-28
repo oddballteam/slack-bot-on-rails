@@ -364,7 +364,9 @@ CREATE TABLE public.slack_threads (
     latest_reply_ts character varying,
     reply_count integer,
     reply_users character varying,
-    reply_users_count integer
+    reply_users_count integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -802,6 +804,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200927031222'),
 ('20200928030555'),
 ('20200928154004'),
-('20200928161831');
+('20200928161831'),
+('20200928184643');
 
 
