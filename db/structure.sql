@@ -264,6 +264,38 @@ CREATE UNLOGGED TABLE public.que_lockers (
 
 
 --
+-- Name: que_scheduler_audit; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.que_scheduler_audit (
+    scheduler_job_id bigint NOT NULL,
+    executed_at timestamp with time zone NOT NULL
+);
+
+
+--
+-- Name: TABLE que_scheduler_audit; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON TABLE public.que_scheduler_audit IS '5';
+
+
+--
+-- Name: que_scheduler_audit_enqueued; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.que_scheduler_audit_enqueued (
+    scheduler_job_id bigint NOT NULL,
+    job_class character varying(255) NOT NULL,
+    queue character varying(255),
+    priority integer,
+    args jsonb NOT NULL,
+    job_id bigint,
+    run_at timestamp with time zone
+);
+
+
+--
 -- Name: que_values; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -528,6 +560,14 @@ ALTER TABLE ONLY public.que_lockers
 
 
 --
+-- Name: que_scheduler_audit que_scheduler_audit_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.que_scheduler_audit
+    ADD CONSTRAINT que_scheduler_audit_pkey PRIMARY KEY (scheduler_job_id);
+
+
+--
 -- Name: que_values que_values_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -661,6 +701,27 @@ CREATE INDEX que_poll_idx ON public.que_jobs USING btree (queue, priority, run_a
 
 
 --
+-- Name: que_scheduler_audit_enqueued_args; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX que_scheduler_audit_enqueued_args ON public.que_scheduler_audit_enqueued USING btree (args);
+
+
+--
+-- Name: que_scheduler_audit_enqueued_job_class; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX que_scheduler_audit_enqueued_job_class ON public.que_scheduler_audit_enqueued USING btree (job_class);
+
+
+--
+-- Name: que_scheduler_audit_enqueued_job_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX que_scheduler_audit_enqueued_job_id ON public.que_scheduler_audit_enqueued USING btree (job_id);
+
+
+--
 -- Name: taggings_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -712,6 +773,14 @@ ALTER TABLE ONLY public.taggings
 
 
 --
+-- Name: que_scheduler_audit_enqueued que_scheduler_audit_enqueued_scheduler_job_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.que_scheduler_audit_enqueued
+    ADD CONSTRAINT que_scheduler_audit_enqueued_scheduler_job_id_fkey FOREIGN KEY (scheduler_job_id) REFERENCES public.que_scheduler_audit(scheduler_job_id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -732,6 +801,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200926230043'),
 ('20200927031222'),
 ('20200928030555'),
-('20200928154004');
+('20200928154004'),
+('20200928161831');
 
 

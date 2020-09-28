@@ -18,7 +18,7 @@ gem 'webpacker', '~> 4.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.7'
+# gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
@@ -33,22 +33,16 @@ gem 'bootsnap', '>= 1.4.2', require: false
 # Slack bot
 gem 'acts-as-taggable-on'
 gem 'que', git: 'https://github.com/que-rb/que'
+gem 'que-scheduler'
 gem 'react-rails'
 gem 'slack-ruby-bot'
 
 group :development, :test do
   gem 'dotenv'
-  gem 'factory_bot_rails'
-  gem 'faker', git: 'https://github.com/faker-ruby/faker'
   gem 'pry'
-  gem 'rails-controller-testing'
-  gem 'rspec-its'
-  gem 'rspec-rails'
 end
 
 group :development do
-  gem 'guard-rspec'
-  gem 'guard-rubocop'
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'listen', '~> 3.2'
   gem 'web-console', '>= 3.3.0'
@@ -58,13 +52,14 @@ group :development do
 end
 
 group :test do
-  # Adds support for Capybara system testing and selenium driver
-  gem 'capybara', '>= 2.15'
+  gem 'factory_bot_rails'
+  gem 'faker', git: 'https://github.com/faker-ruby/faker'
+  gem 'guard-rspec'
+  gem 'guard-rubocop'
+  gem 'rspec-its'
   gem 'rspec_pacman_formatter'
-  gem 'selenium-webdriver'
+  gem 'rspec-rails'
   gem 'simplecov', require: false
-  # Easy installation and use of web drivers to run system tests with browsers
-  gem 'webdrivers'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
