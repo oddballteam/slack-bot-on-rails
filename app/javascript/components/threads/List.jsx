@@ -22,7 +22,8 @@ class ListThreads extends React.Component {
   }
 
   fetchData = (options) => {
-    fetch(`/threads.json?from=${options.from}&to=${options.to}`)
+    this.setState({ threads: [] })
+    fetch(`https://oddball-support-bot.herokuapp.com/threads.json?from=${options.from}&to=${options.to}`)
       .then(response => {
         if (response.ok) {
           return response.json()
