@@ -30,7 +30,7 @@ class ListThreads extends React.Component {
         throw new Error("Network response was not ok.")
       })
       .then(response => this.setState({ threads: response }))
-      .catch(() => this.props.history.push('/'))
+      .catch(e => console.log('error', e))
   }
 
   setFromDate = (date) => {
@@ -57,6 +57,10 @@ class ListThreads extends React.Component {
     const threads = this.state.threads.map(thread => {
       if (thread.started_at) {
         thread.started_at = DateTime.fromISO(thread.started_at).toLocaleString()
+      }
+
+      if (thread.created_at) {
+        thread.created_at = DateTime.fromISO(thread.created_at).toLocaleString()
       }
 
       if (thread.ended_at) {
@@ -151,6 +155,7 @@ class ListThreads extends React.Component {
             data={threads}
             gridArea="main"
             onClickRow={({ item }) => { console.log('click', item) }}
+            replace={true}
           />
           <Calendar
             size="small"
