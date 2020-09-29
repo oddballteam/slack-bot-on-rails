@@ -4,6 +4,8 @@
 class SlackThread < ApplicationRecord
   acts_as_taggable_on :category, :link
   belongs_to :team
+  belongs_to :user, optional: true, foreign_key: :started_by
+  alias_attribute :starter, :user
 
   scope :after, ->(date) { where('started_at >= ?', date) }
   scope :before, ->(date) { where('started_at < ?', date) }
@@ -59,7 +61,7 @@ class SlackThread < ApplicationRecord
   def update_conversation_details
     replies = slack_client.conversations_replies(channel: channel, ts: slack_ts, inclusive: true, limit: 1)
     message = replies['messages'].first
-    self.started_by ||= message['user']
+    self.starter ||= User.find_or_create_by(slack_id: message['user'], team: team)
     self.latest_reply_ts = message['latest_reply']
     self.reply_count = message['reply_count']
     self.reply_users = message['reply_users'].join(', ')

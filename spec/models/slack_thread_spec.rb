@@ -133,9 +133,12 @@ RSpec.describe SlackThread do
         limit: 1
       }
     end
+    let(:user) { FactoryBot.build_stubbed(:user, :team) }
 
     before do
       allow(thread.slack_client).to receive(:conversations_replies) { slack_replies }
+      allow(thread).to receive(:save) { true }
+      allow(User).to receive(:find_or_create_by) { user }
     end
 
     context 'slack API success' do
@@ -146,7 +149,7 @@ RSpec.describe SlackThread do
       its(:reply_count) { is_expected.to eq 14 }
       its(:reply_users) { is_expected.to eq 'U01A1628SLV, U0132PA923R' }
       its(:reply_users_count) { is_expected.to eq 2 }
-      its(:started_by) { is_expected.to eq 'U0132PA923R' }
+      its(:starter) { is_expected.to eq user }
     end
 
     context 'slack API error: missing scope' do

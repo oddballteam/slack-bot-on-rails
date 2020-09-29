@@ -359,14 +359,14 @@ CREATE TABLE public.slack_threads (
     channel character varying,
     slack_ts character varying,
     permalink character varying,
-    started_by character varying,
     team_id bigint,
     latest_reply_ts character varying,
     reply_count integer,
     reply_users character varying,
     reply_users_count integer,
     created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
-    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL
+    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL,
+    started_by integer
 );
 
 
@@ -840,6 +840,14 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: slack_threads fk_rails_b95e3073c3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.slack_threads
+    ADD CONSTRAINT fk_rails_b95e3073c3 FOREIGN KEY (started_by) REFERENCES public.users(id);
+
+
+--
 -- Name: que_scheduler_audit_enqueued que_scheduler_audit_enqueued_scheduler_job_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -873,6 +881,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200928184643'),
 ('20200928231618'),
 ('20200928232450'),
-('20200929020927');
+('20200929020927'),
+('20200929151409'),
+('20200929151615');
 
 
