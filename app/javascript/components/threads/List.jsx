@@ -1,6 +1,6 @@
 import React from 'react'
 import { DateTime } from 'luxon'
-import { Grommet, Calendar, Grid, Header, Heading, List } from 'grommet'
+import { Grommet, Calendar, DataTable, Grid, Heading, Text } from 'grommet'
 
 const theme = {
   global: {
@@ -74,14 +74,15 @@ class ListThreads extends React.Component {
       <Grommet theme={theme}>
         <Grid
           rows={['xsmall', 'xsmall', 'large']}
-          columns={['small', 'large', 'small']}
+          columns={['small', 'fill', 'small']}
           gap="medium"
+          align="start"
           areas={[
-            { name: 'header', start: [0, 0], end: [2, 0] },
-            { name: 'subheader', start: [0, 1], end: [2, 1] },
-            { name: 'left', start: [0, 2], end: [0, 2] },
-            { name: 'main', start: [1, 2], end: [1, 2] },
-            { name: 'right', start: [2, 2], end: [2, 2] },
+            { name: 'left', start: [0, 0], end: [0, 1] },
+            { name: 'header', start: [1, 0], end: [1, 0] },
+            { name: 'subheader', start: [1, 1], end: [1, 1] },
+            { name: 'right', start: [2, 0], end: [2, 1] },
+            { name: 'main', start: [0, 2], end: [2, 2] },
           ]}
         >
           <Heading level="1" gridArea="header" textAlign="center">Support Threads</Heading>
@@ -99,13 +100,57 @@ class ListThreads extends React.Component {
             date={from}
             onSelect={date => this.setFromDate(date)}
           />
-          <List
-            gridArea="main"
+          <DataTable
+            columns={[
+              {
+                property: 'started_at',
+                header: <Text>Opened at</Text>,
+              },
+              {
+                property: 'created_at',
+                header: <Text>Responded at</Text>,
+              },
+              {
+                property: 'latest_reply_ts',
+                header: <Text>Latest reply at</Text>,
+              },
+              {
+                property: 'ended_at',
+                header: <Text>Closed at</Text>,
+              },
+              {
+                property: 'channel',
+                header: <Text>Channel</Text>,
+              },
+              {
+                property: 'category_list',
+                header: <Text>Labels</Text>,
+              },
+              {
+                property: 'started_by',
+                header: <Text>Started by</Text>,
+              },
+              {
+                property: 'reply_users',
+                header: <Text>Participants</Text>,
+              },
+              {
+                property: 'reply_users_count',
+                header: <Text>Total participants</Text>,
+              },
+              {
+                property: 'reply_count',
+                header: <Text>Total replies</Text>,
+              },
+              {
+                property: 'link_list',
+                header: <Text>Links</Text>,
+              },
+            ]}
             background={["light-2", "light-5"]}
-            primaryKey="started_at"
-            secondaryKey="category_list"
             data={threads}
-            onClickItem={({ item, index }) => { console.log('click', item, index) }}
+            gridArea="main"
+            onClickRow={({ item }) => { console.log('click', item) }}
           />
           <Calendar
             size="small"
