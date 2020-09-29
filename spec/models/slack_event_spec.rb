@@ -63,6 +63,12 @@ RSpec.describe SlackEvent, type: :model do
       it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
     end
 
+    context 'close' do
+      subject { ResolveThreadJob }
+      let(:event) { FactoryBot.build(:slack_event, :close) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
+    end
+
     context 'link' do
       subject { AddThreadLinkJob }
       let(:event) { FactoryBot.build(:slack_event, :link) }
@@ -97,6 +103,12 @@ RSpec.describe SlackEvent, type: :model do
       subject { RemoveThreadLinkJob }
       let(:event) { FactoryBot.build(:slack_event, :remove_link) }
       it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: 'https://www.test.com') }
+    end
+
+    context 'resolve' do
+      subject { ResolveThreadJob }
+      let(:event) { FactoryBot.build(:slack_event, :resolve) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
     end
 
     context 'track' do

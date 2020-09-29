@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddStartedByReferenceToSlackThreads < ActiveRecord::Migration[6.0]
   def change
     add_column :slack_threads, :started_by, :integer

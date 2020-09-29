@@ -8,12 +8,14 @@ class SlackEvent < ApplicationRecord
     'add category' => AddThreadCategoryJob,
     'add link' => AddThreadLinkJob,
     'categories' => ListThreadCategoriesJob,
+    'close' => ResolveThreadJob,
     'link' => AddThreadLinkJob,
     'links' => ListThreadLinksJob,
     'list categories' => ListThreadCategoriesJob,
     'list links' => ListThreadLinksJob,
     'remove category' => RemoveThreadCategoryJob,
     'remove link' => RemoveThreadLinkJob,
+    'resolve' => ResolveThreadJob,
     'track' => CreateThreadJob,
     'unlink' => RemoveThreadLinkJob
   }.freeze

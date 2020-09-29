@@ -50,6 +50,14 @@ FactoryBot.define do
       end
     end
 
+    trait :close do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> close')
+        megahash
+      end
+    end
+
     trait :help do
       thread
       metadata do
@@ -102,6 +110,14 @@ FactoryBot.define do
       thread
       metadata do
         megahash['event'].merge!('text' => '<@BOT> remove link https://www.test.com')
+        megahash
+      end
+    end
+
+    trait :resolve do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> resolve')
         megahash
       end
     end
