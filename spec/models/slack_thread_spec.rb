@@ -39,7 +39,6 @@ RSpec.describe SlackThread do
     let(:client) { MockSlackClient.new }
     let(:permalink) { 'https://example.com/' }
     let(:started_at) { Time.parse('2018-01-08 22:12:02 UTC') } # thread_ts as UTC date
-    # let(:started_by) {  }
 
     before do
       allow(Slack::Web::Client).to receive(:new) { client }
@@ -124,7 +123,7 @@ RSpec.describe SlackThread do
   end
 
   describe '#update_conversation_details' do
-    subject { thread }
+    subject(:thread) { FactoryBot.build(:slack_thread, :team) }
 
     let(:args) do
       {
@@ -134,14 +133,13 @@ RSpec.describe SlackThread do
         limit: 1
       }
     end
-    let(:thread) { FactoryBot.build(:slack_thread, :team) }
 
     before do
       allow(thread.slack_client).to receive(:conversations_replies) { slack_replies }
     end
 
     context 'slack API success' do
-      let(:slack_replies) { FactoryBot.build(:slack_reply) }
+      let(:slack_replies) { FactoryBot.build(:slack_replies) }
       before { thread.update_conversation_details }
       its(:slack_client) { is_expected.to have_received(:conversations_replies).with(args) }
       its(:latest_reply_ts) { is_expected.to eq '1601259545.006300' }

@@ -506,7 +506,8 @@ CREATE TABLE public.users (
     real_name character varying,
     image_url character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    team_id bigint
 );
 
 
@@ -731,6 +732,13 @@ CREATE UNIQUE INDEX index_tags_on_name ON public.tags USING btree (name);
 
 
 --
+-- Name: index_users_on_team_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_team_id ON public.users USING btree (team_id);
+
+
+--
 -- Name: que_jobs_args_gin_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -824,6 +832,14 @@ ALTER TABLE ONLY public.taggings
 
 
 --
+-- Name: users fk_rails_b2bbf87303; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_b2bbf87303 FOREIGN KEY (team_id) REFERENCES public.teams(id);
+
+
+--
 -- Name: que_scheduler_audit_enqueued que_scheduler_audit_enqueued_scheduler_job_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -856,6 +872,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200928161831'),
 ('20200928184643'),
 ('20200928231618'),
-('20200928232450');
+('20200928232450'),
+('20200929020927');
 
 

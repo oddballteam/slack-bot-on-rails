@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :slack_message, class: OpenStruct do
+  factory :slack_reply, class: OpenStruct do
     blocks { [] }
     latest_reply { '1601259545.006300' }
     reply_count { 14 }
@@ -16,10 +16,10 @@ FactoryBot.define do
     user { 'U0132PA923R' }
   end
 
-  factory :slack_reply, class: OpenStruct do
+  factory :slack_replies, class: OpenStruct do
     messages do
       [
-        build(:slack_message)
+        build(:slack_reply)
       ]
     end
   end
