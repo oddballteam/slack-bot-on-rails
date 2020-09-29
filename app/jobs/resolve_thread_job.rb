@@ -9,9 +9,10 @@ class ResolveThreadJob < ApplicationJob
   # We use the Linux priority scale - a lower number is more important.
   self.priority = 10
 
-  def run(thread_id:)
+  def run(event_id:)
     message = 'An unexpected error occurred. :shrug:'
-    slack_thread = SlackThread.find(thread_id)
+    event = SlackEvent.find(event_id)
+    slack_thread = SlackThread.find_or_initialize_by_event(event)
 
     SlackThread.transaction do
       message = if slack_thread.update(ended_at: Time.now)
@@ -20,6 +21,7 @@ class ResolveThreadJob < ApplicationJob
                   "There were errors. #{slack_thread.errors.full_messages.join('. ')}. :shrug:"
                 end
 
+      event.update(state: 'replied')
       # destroy the job when finished
       destroy
     end
