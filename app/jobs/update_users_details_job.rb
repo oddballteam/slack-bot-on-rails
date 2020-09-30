@@ -14,7 +14,7 @@ class UpdateUsersDetailsJob < ApplicationJob
   def run
     users = User.where(real_name: nil)
 
-    SlackThread.transaction do
+    User.transaction do
       users.each(&:update_profile_details)
       # destroy the job when finished
       destroy

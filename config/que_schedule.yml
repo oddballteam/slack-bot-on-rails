@@ -1,5 +1,6 @@
 # see https://github.com/hlascelles/que-scheduler#schedule-configuration
 UpdateThreadsDetailsJob:
   cron: '*/5 * * * *'
+
 UpdateUsersDetailsJob:
   cron: '*/5 * * * *'
