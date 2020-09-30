@@ -1,31 +1,38 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-### Deploy to Heroku
-
-Hit the button below and update the `SLACK_API_TOKEN` config variable with your [token](http://slack.com/services/new/bot)
+## Deploy to Heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/oddballteam/slack-bot-on-rails)
+
+Then visit your Heroku app URL /teams/new, and click the Add to Slack button.
+
+## Troubleshooting
+
+### Thread Details Are Not Updating
+
+Using the Rails console (ex: `heroku run rails console`), note the last time the UpdateThreadsDetailsJob was enqueued:
+
+```
+irb> Que::Scheduler::VersionSupport.execute("select * from que_scheduler_audit_enqueued")
+=> [{:scheduler_job_id=>43, :job_class=>"UpdateThreadsDetailsJob", :queue=>"default", :priority=>100, :args=>[], :job_id=>44, :run_at=>2020-09-28 19:00:02 +0000}, {:scheduler_job_id=>134, :job_class=>"UpdateThreadsDetailsJob", :queue=>"default", :priority=>100, :args=>[], :job_id=>135, :run_at=>2020-09-30 15:25:03 +0000}, {:scheduler_job_id=>140, :job_class=>"UpdateThreadsDetailsJob", :queue=>"default", :priority=>100, :args=>[], :job_id=>141, :run_at=>2020-09-30 15:30:00 +0000}]
+```
+
+Next, check the last time the Que Scheduler ran:
+
+```
+irb> Que::Scheduler::VersionSupport.execute("select * from que_scheduler_audit_enqueued")
+=> [{:scheduler_job_id=>20, :executed_at=>2020-09-28 18:38:14 +0000}, {:scheduler_job_id=>21, :executed_at=>2020-09-28 18:39:04 +0000}, {:scheduler_job_id=>22, :executed_at=>2020-09-28 18:40:04 +0000}, {:scheduler_job_id=>23, :executed_at=>2020-09-28 18:41:00 +0000}]
+```
+
+Finally, check that the Que Scheduler job is enqueued:
+
+```
+irb> Que.job_stats
+=> [{:job_class=>"Que::Scheduler::SchedulerJob", :count=>1, :count_working=>1, :count_errored=>0, :highest_error_count=>0, :oldest_run_at=>2020-09-30 15:26:00 +0000}]
+```
+
+If not, enqueue it:
+
+```
+irb> Que::Scheduler::SchedulerJob.enqueue
+```
