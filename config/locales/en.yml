@@ -34,3 +34,5 @@ en:
     attributes:
       team:
         slack_id: 'Team'
+      user:
+        slack_id: 'User'

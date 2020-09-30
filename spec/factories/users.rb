@@ -3,8 +3,8 @@
 FactoryBot.define do
   factory :user do
     slack_id { 'MyString' }
-    display_name { 'MyString' }
-    real_name { 'MyString' }
+    display_name { 'bobby' }
+    real_name { 'Bobby Tables' }
     image_url { 'MyString' }
   end
 

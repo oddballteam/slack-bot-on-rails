@@ -41,6 +41,13 @@ class SlackThread < ApplicationRecord
     response&.permalink
   end
 
+  # customize JSON output
+  def as_json(options = {})
+    super.tap do |hash|
+      hash['started_by'] = user&.real_name
+    end
+  end
+
   # formatted link for slack messages
   def formatted_link
     host = ENV['HEROKU_APP_NAME'] ? "#{ENV['HEROKU_APP_NAME']}.herokuapp.com" : 'localhost:3000'

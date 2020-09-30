@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe SlackThread do
-  let(:thread) { FactoryBot.build_stubbed(:slack_thread) }
+  let(:thread) { FactoryBot.build_stubbed(:slack_thread, :user) }
 
   context 'date range queries' do
     let(:last_month) { 1.month.ago.to_date }
@@ -84,6 +84,11 @@ RSpec.describe SlackThread do
       let!(:team) { FactoryBot.create(:team, slack_id: event.team) }
       its(:slack_id) { is_expected.to eq event.team }
     end
+  end
+
+  describe '#as_json' do
+    subject { thread.as_json }
+    it { is_expected.to include('started_by' => 'Bobby Tables') }
   end
 
   describe '#formatted_link' do

@@ -3,7 +3,7 @@
 RSpec.describe ThreadsController, type: :request do
   describe 'GET /threads' do
     context 'mime types' do
-      let(:thread) { SlackThread.new }
+      let(:thread) { FactoryBot.build(:slack_thread, :user) }
       let(:threads) { [thread] }
 
       before { allow(SlackThread).to receive(:all) { threads } }
