@@ -17,6 +17,7 @@ class User < ApplicationRecord
     self.display_name = profile['profile']['display_name']
     self.image_url = profile['profile']['image_72']
     self.real_name = profile['profile']['real_name']
+    save
   rescue Slack::Web::Api::Errors::MissingScope => _e
     false
   end
