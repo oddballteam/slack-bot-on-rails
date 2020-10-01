@@ -33,6 +33,10 @@ RSpec.describe SlackEvent, type: :model do
     end
   end
 
+  describe '#user' do
+    its(:user) { is_expected.to eq event_data['user'] }
+  end
+
   context 'thread commands' do
     before do
       allow(subject).to receive(:enqueue)

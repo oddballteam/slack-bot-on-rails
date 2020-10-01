@@ -17,7 +17,7 @@ RSpec.describe ListThreadCategoriesJob do
     let(:thread) { FactoryBot.build_stubbed(:slack_thread) }
 
     it 'replies "none"' do
-      expect(thread).to have_received(:post_message).with(/none/i)
+      expect(thread).to have_received(:post_message).with(/none/i, 'U061F7AUR')
     end
   end
 
@@ -25,7 +25,7 @@ RSpec.describe ListThreadCategoriesJob do
     let(:thread) { FactoryBot.build_stubbed(:slack_thread, :categories) }
 
     it 'replies with categories' do
-      expect(thread).to have_received(:post_message).with(/#{thread.category_list}/)
+      expect(thread).to have_received(:post_message).with(/#{thread.category_list}/, 'U061F7AUR')
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe ListThreadCategoriesJob do
     let(:thread) { FactoryBot.build_stubbed(:slack_thread) }
 
     it 'replies "not tracking"' do
-      expect(thread).to have_received(:post_message).with(/not tracking/)
+      expect(thread).to have_received(:post_message).with(/not tracking/, 'U061F7AUR')
     end
   end
 end

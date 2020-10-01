@@ -16,14 +16,14 @@ RSpec.describe ResolveThreadJob do
 
   context 'save succeeds' do
     it 'replies "resolved"' do
-      expect(thread).to have_received(:post_message).with(/resolved/i)
+      expect(thread).to have_received(:post_message).with(/resolved/i, 'U061F7AUR')
     end
   end
 
   context 'save fails' do
     let(:success) { false }
     it 'replies "errors"' do
-      expect(thread).to have_received(:post_message).with(/errors/i)
+      expect(thread).to have_received(:post_message).with(/errors/i, 'U061F7AUR')
     end
   end
 end

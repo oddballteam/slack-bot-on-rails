@@ -43,7 +43,7 @@ class SlackThread < ApplicationRecord
 
   # customize JSON output
   def as_json(options = {})
-    super(options.merge(methods: [:reply_users_names, :started_by_name]))
+    super(options.merge(methods: %i[reply_users_names started_by_name]))
   end
 
   # formatted link for slack messages
@@ -53,11 +53,12 @@ class SlackThread < ApplicationRecord
   end
 
   # post message to slack thread
-  def post_message(message)
-    slack_client.chat_postMessage(
+  def post_message(message, user)
+    slack_client.chat_postEphemeral(
       channel: channel,
       thread_ts: slack_ts,
-      text: message
+      text: message,
+      user: user
     )
   end
 

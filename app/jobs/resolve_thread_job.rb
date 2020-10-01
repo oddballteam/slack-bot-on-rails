@@ -9,7 +9,7 @@ class ResolveThreadJob < ApplicationJob
   # We use the Linux priority scale - a lower number is more important.
   self.priority = 10
 
-  def run(event_id:, options: nil)
+  def run(event_id:)
     message = 'An unexpected error occurred. :shrug:'
     event = SlackEvent.find(event_id)
     slack_thread = SlackThread.find_or_initialize_by_event(event)
@@ -27,6 +27,6 @@ class ResolveThreadJob < ApplicationJob
     end
 
     # post message in slack thread
-    slack_thread.post_message(message)
+    slack_thread.post_message(message, event.user)
   end
 end

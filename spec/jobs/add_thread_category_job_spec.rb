@@ -16,7 +16,7 @@ RSpec.describe AddThreadCategoryJob do
 
   context 'save succeeds' do
     it 'replies "added"' do
-      expect(thread).to have_received(:post_message).with(/added/i)
+      expect(thread).to have_received(:post_message).with(/added/i, 'U061F7AUR')
     end
   end
 
@@ -24,7 +24,7 @@ RSpec.describe AddThreadCategoryJob do
     let(:success) { false }
 
     it 'replies "errors"' do
-      expect(thread).to have_received(:post_message).with(/errors/i)
+      expect(thread).to have_received(:post_message).with(/errors/i, 'U061F7AUR')
     end
   end
 end

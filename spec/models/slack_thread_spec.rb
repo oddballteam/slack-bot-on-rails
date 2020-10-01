@@ -113,18 +113,19 @@ RSpec.describe SlackThread do
       {
         channel: thread.channel,
         thread_ts: thread.slack_ts,
-        text: message
+        text: message,
+        user: 'DEF789'
       }
     end
     let(:message) { 'Halo Whirrled' }
     let(:thread) { FactoryBot.build_stubbed(:slack_thread, :team) }
 
     before do
-      allow(thread.slack_client).to receive(:chat_postMessage)
-      thread.post_message(message)
+      allow(thread.slack_client).to receive(:chat_postEphemeral)
+      thread.post_message(message, 'DEF789')
     end
 
-    it { is_expected.to have_received(:chat_postMessage).with(args) }
+    it { is_expected.to have_received(:chat_postEphemeral).with(args) }
   end
 
   describe '#reply_users_names' do

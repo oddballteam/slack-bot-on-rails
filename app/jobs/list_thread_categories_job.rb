@@ -28,6 +28,6 @@ class ListThreadCategoriesJob < ApplicationJob
     end
 
     # post message in slack thread
-    slack_thread.post_message(message)
+    slack_thread.post_message(message, event.user)
   end
 end

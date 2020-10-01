@@ -54,4 +54,9 @@ class SlackEvent < ApplicationRecord
   def thread_ts
     metadata&.dig('event', 'thread_ts') || event_ts
   end
+
+  # slack id of the user who sent the message
+  def user
+    metadata&.dig('event', 'user')
+  end
 end

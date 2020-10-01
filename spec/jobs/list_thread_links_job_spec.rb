@@ -13,19 +13,19 @@ RSpec.describe ListThreadLinksJob do
     ListThreadLinksJob.run(event_id: event.id)
   end
 
-  context 'no categories' do
+  context 'no links' do
     let(:thread) { FactoryBot.build_stubbed(:slack_thread) }
 
     it 'replies "none"' do
-      expect(thread).to have_received(:post_message).with(/none/i)
+      expect(thread).to have_received(:post_message).with(/none/i, 'U061F7AUR')
     end
   end
 
   context 'categories' do
     let(:thread) { FactoryBot.build_stubbed(:slack_thread, :links) }
 
-    it 'replies with categories' do
-      expect(thread).to have_received(:post_message).with(/#{thread.category_list}/)
+    it 'replies with links' do
+      expect(thread).to have_received(:post_message).with(/#{thread.link_list.join("\n- ")}/, 'U061F7AUR')
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe ListThreadLinksJob do
     let(:thread) { FactoryBot.build_stubbed(:slack_thread) }
 
     it 'replies "not tracking"' do
-      expect(thread).to have_received(:post_message).with(/not tracking/)
+      expect(thread).to have_received(:post_message).with(/not tracking/, 'U061F7AUR')
     end
   end
 end

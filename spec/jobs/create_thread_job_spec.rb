@@ -19,20 +19,20 @@ RSpec.describe CreateThreadJob do
   context 'already tracked' do
     let(:persisted) { true }
     it 'replies "already tracked"' do
-      expect(thread).to have_received(:post_message).with(/already being tracked/i)
+      expect(thread).to have_received(:post_message).with(/already being tracked/i, 'U061F7AUR')
     end
   end
 
   context 'save succeeds' do
     it 'replies "now tracking"' do
-      expect(thread).to have_received(:post_message).with(/now tracking/i)
+      expect(thread).to have_received(:post_message).with(/now tracking/i, 'U061F7AUR')
     end
   end
 
   context 'save fails' do
     let(:success) { false }
     it 'replies "errors"' do
-      expect(thread).to have_received(:post_message).with(/errors/i)
+      expect(thread).to have_received(:post_message).with(/errors/i, 'U061F7AUR')
     end
   end
 end
