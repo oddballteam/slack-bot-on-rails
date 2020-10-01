@@ -325,7 +325,8 @@ CREATE TABLE public.slack_events (
     metadata jsonb,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    state character varying
+    state character varying,
+    event_time integer
 );
 
 
@@ -883,6 +884,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200928232450'),
 ('20200929020927'),
 ('20200929151409'),
-('20200929151615');
+('20200929151615'),
+('20201001204153');
 
 

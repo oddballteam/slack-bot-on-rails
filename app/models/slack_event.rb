@@ -3,6 +3,7 @@
 # store metadata from Slack events
 class SlackEvent < ApplicationRecord
   validates_presence_of :metadata
+  validates_uniqueness_of :event_time
 
   COMMANDS = {
     'add category' => AddThreadCategoryJob,
@@ -38,6 +39,12 @@ class SlackEvent < ApplicationRecord
   # event timestamp
   def event_ts
     metadata&.dig('event', 'event_ts')
+  end
+
+  # event metadata
+  def metadata=(metadata)
+    super(metadata)
+    self.event_time = metadata['event_time']
   end
 
   # event team id

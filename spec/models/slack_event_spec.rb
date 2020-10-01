@@ -12,6 +12,10 @@ RSpec.describe SlackEvent, type: :model do
     its(:channel) { is_expected.to eq event_data['channel'] }
   end
 
+  describe '#event_time' do
+    its(:event_time) { is_expected.to eq event.metadata['event_time'] }
+  end
+
   describe '#event_ts' do
     its(:event_ts) { is_expected.to eq event_data['event_ts'] }
   end

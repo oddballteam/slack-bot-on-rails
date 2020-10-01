@@ -60,7 +60,7 @@ RSpec.describe EventsController, type: :request do
         post '/events'
       end
 
-      it { is_expected.to have_http_status(:unprocessable_entity) }
+      it { is_expected.to have_http_status(:ok) }
     end
   end
 end

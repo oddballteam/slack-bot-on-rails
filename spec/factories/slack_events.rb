@@ -12,7 +12,8 @@ FactoryBot.define do
             'channel' => 'C0LAN2Q65',
             'event_ts' => '1515449522000016',
             'team' => 'T1ZD0UBMZ'
-          }
+          },
+          'event_time' => 1_234_567_890
         }
       end
     end

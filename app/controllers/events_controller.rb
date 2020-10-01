@@ -13,7 +13,7 @@ class EventsController < ApplicationController
         event.enqueue_job
         head :created
       else
-        head :unprocessable_entity
+        head :ok # or else Slack will continue to resend dupe events
       end
     end
   end
