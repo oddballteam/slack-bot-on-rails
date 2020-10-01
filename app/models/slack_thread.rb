@@ -43,9 +43,7 @@ class SlackThread < ApplicationRecord
 
   # customize JSON output
   def as_json(options = {})
-    super.tap do |hash|
-      hash['started_by'] = user&.real_name
-    end
+    super(options.merge(methods: [:reply_users_names, :started_by_name]))
   end
 
   # formatted link for slack messages
@@ -56,12 +54,28 @@ class SlackThread < ApplicationRecord
 
   # post message to slack thread
   def post_message(message)
-    slack_client.chat_postMessage(channel: channel, thread_ts: slack_ts, text: message)
+    slack_client.chat_postMessage(
+      channel: channel,
+      thread_ts: slack_ts,
+      text: message
+    )
+  end
+
+  # the names for the reply_users ids
+  def reply_users_names
+    reply_users&.split(/[, ]+/)&.map do |reply_user_id|
+      User.find(reply_user_id).real_name
+    end&.join(', ')
   end
 
   # slack web client
   def slack_client
     team&.slack_client
+  end
+
+  # the name for the started_by user id
+  def started_by_name
+    user&.real_name
   end
 
   # get the first message of the thread, which provides add'l metadata not contained in replies
@@ -71,7 +85,10 @@ class SlackThread < ApplicationRecord
     self.starter ||= User.find_or_create_by(slack_id: message['user'], team: team)
     self.latest_reply_ts = message['latest_reply']
     self.reply_count = message['reply_count']
-    self.reply_users = message['reply_users'].join(', ')
+    self.reply_users = message['reply_users'].map do |reply_user|
+      user = User.find_or_create_by(slack_id: reply_user, team: team)
+      user.id
+    end.join(', ')
     self.reply_users_count = message['reply_users_count']
     save
   rescue Slack::Web::Api::Errors::MissingScope => _e

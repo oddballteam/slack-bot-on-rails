@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :user do
-    slack_id { 'MyString' }
+    slack_id { "U#{Faker::Alphanumeric.unique.alphanumeric(number: 8).upcase}" }
     display_name { 'bobby' }
     real_name { 'Bobby Tables' }
     image_url { 'MyString' }

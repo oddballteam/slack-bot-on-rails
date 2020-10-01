@@ -88,7 +88,7 @@ RSpec.describe SlackThread do
 
   describe '#as_json' do
     subject { thread.as_json }
-    it { is_expected.to include('started_by' => 'Bobby Tables') }
+    it { is_expected.to include('reply_users_names', 'started_by_name') }
   end
 
   describe '#formatted_link' do
@@ -127,8 +127,19 @@ RSpec.describe SlackThread do
     it { is_expected.to have_received(:chat_postMessage).with(args) }
   end
 
+  describe '#reply_users_names' do
+    let(:thread) { FactoryBot.create(:slack_thread_with_reply_users, :team) }
+    subject { thread.reply_users_names }
+    it { is_expected.to eq 'Bobby Tables, Bobby Tables' }
+  end
+
+  describe '#started_by_name' do
+    subject { thread.started_by_name }
+    it { is_expected.to eq 'Bobby Tables' }
+  end
+
   describe '#update_conversation_details' do
-    subject(:thread) { FactoryBot.build(:slack_thread, :team) }
+    subject(:thread) { FactoryBot.build_stubbed(:slack_thread, :team) }
 
     let(:args) do
       {
@@ -138,21 +149,34 @@ RSpec.describe SlackThread do
         limit: 1
       }
     end
-    let(:user) { FactoryBot.build_stubbed(:user, :team) }
+    let(:reply) { slack_replies.messages.first }
+    let(:user) { FactoryBot.build_stubbed(:user, team: thread.team) }
+    let(:reply_users) { FactoryBot.build_stubbed_list(:user, 2, team: thread.team) }
 
     before do
       allow(thread.slack_client).to receive(:conversations_replies) { slack_replies }
       allow(thread).to receive(:save) { true }
-      allow(User).to receive(:find_or_create_by) { user }
     end
 
     context 'slack API success' do
       let(:slack_replies) { FactoryBot.build(:slack_replies) }
-      before { thread.update_conversation_details }
+      before do
+        allow(User).to receive(:find_or_create_by).with(
+          slack_id: reply['user'], team: thread.team
+        ) { user }
+        allow(User).to receive(:find_or_create_by).with(
+          slack_id: reply['reply_users'].first, team: thread.team
+        ) { reply_users.first }
+        allow(User).to receive(:find_or_create_by).with(
+          slack_id: reply['reply_users'].last, team: thread.team
+        ) { reply_users.last }
+        thread.update_conversation_details
+      end
+      it { is_expected.to have_received(:save) }
       its(:slack_client) { is_expected.to have_received(:conversations_replies).with(args) }
       its(:latest_reply_ts) { is_expected.to eq '1601259545.006300' }
       its(:reply_count) { is_expected.to eq 14 }
-      its(:reply_users) { is_expected.to eq 'U01A1628SLV, U0132PA923R' }
+      its(:reply_users) { is_expected.to eq "#{reply_users.first.id}, #{reply_users.last.id}" }
       its(:reply_users_count) { is_expected.to eq 2 }
       its(:starter) { is_expected.to eq user }
     end

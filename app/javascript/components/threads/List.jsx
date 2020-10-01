@@ -133,11 +133,11 @@ class ListThreads extends React.Component {
                 header: <Text>Labels</Text>,
               },
               {
-                property: 'started_by',
+                property: 'started_by_name',
                 header: <Text>Started by</Text>,
               },
               {
-                property: 'reply_users',
+                property: 'reply_users_names',
                 header: <Text>Participants</Text>,
               },
               {
