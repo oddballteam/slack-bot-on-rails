@@ -22,23 +22,11 @@ class SlackThread < ApplicationRecord
     # TODO: started_by
     team = Team.find_by(slack_id: event.team)
     find_by(slack_ts: event.thread_ts) || new(
-      channel: event.channel,
-      permalink: permalink_for_event(event),
+      channel_id: event.channel,
       slack_ts: event.thread_ts,
       started_at: datetime_from_ts(slack_ts: event.thread_ts),
       team: team
     )
-  end
-
-  # get the permalink for the thread
-  def self.permalink_for_event(event)
-    team = Team.find_by(slack_id: event.team)
-    return unless team&.access_token&.present?
-
-    client = Slack::Web::Client.new(token: team.access_token)
-    # client.auth_test????
-    response = client.chat_getPermalink(channel: event.channel, message_ts: event.thread_ts)
-    response&.permalink
   end
 
   # customize JSON output
@@ -49,13 +37,13 @@ class SlackThread < ApplicationRecord
   # formatted link for slack messages
   def formatted_link
     host = ENV['HEROKU_APP_NAME'] ? "#{ENV['HEROKU_APP_NAME']}.herokuapp.com" : 'localhost:3000'
-    "<#{Rails.application.routes.url_helpers.thread_url(id, host: host)}|this thread>"
+    "<#{Rails.application.routes.url_helpers.thread_url(id, host: host, format: :json)}|this thread>"
   end
 
   # post message to slack thread
   def post_message(message, user)
     slack_client.chat_postEphemeral(
-      channel: channel,
+      channel: channel_id,
       thread_ts: slack_ts,
       text: message,
       user: user
@@ -79,9 +67,26 @@ class SlackThread < ApplicationRecord
     user&.real_name
   end
 
+  # lookup the thread permalink and channel name via the slack API
+  def update_metadata
+    # https://api.slack.com/methods/conversations.info
+    # scopes: channels:read, groups:read, im:read, mpim:read
+    response = slack_client.conversations_info(channel: channel_id)
+    self.channel_name = response['channel']['name'] if response
+
+    # https://api.slack.com/methods/chat.getPermalink
+    # scopes: No scope required
+    response = slack_client.chat_getPermalink(channel: channel_id, message_ts: slack_ts)
+    self.permalink = response&.permalink
+
+    save
+  rescue Slack::Web::Api::Errors::MissingScope => _e
+    false
+  end
+
   # get the first message of the thread, which provides add'l metadata not contained in replies
-  def update_conversation_details
-    replies = slack_client.conversations_replies(channel: channel, ts: slack_ts, inclusive: true, limit: 1)
+  def update_replies
+    replies = slack_client.conversations_replies(channel: channel_id, ts: slack_ts, inclusive: true, limit: 1)
     message = replies['messages'].first
     self.starter ||= User.find_or_create_by(slack_id: message['user'], team: team)
     self.latest_reply_ts = message['latest_reply']

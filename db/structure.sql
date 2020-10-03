@@ -357,7 +357,7 @@ CREATE TABLE public.slack_threads (
     id bigint NOT NULL,
     started_at timestamp without time zone,
     ended_at timestamp without time zone,
-    channel character varying,
+    channel_id character varying,
     slack_ts character varying,
     permalink character varying,
     team_id bigint,
@@ -367,7 +367,8 @@ CREATE TABLE public.slack_threads (
     reply_users_count integer,
     created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
     updated_at timestamp(6) without time zone DEFAULT now() NOT NULL,
-    started_by integer
+    started_by integer,
+    channel_name character varying
 );
 
 
@@ -885,6 +886,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200929020927'),
 ('20200929151409'),
 ('20200929151615'),
-('20201001204153');
+('20201001204153'),
+('20201003010500');
 
 

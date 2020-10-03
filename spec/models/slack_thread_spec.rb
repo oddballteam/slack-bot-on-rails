@@ -68,15 +68,9 @@ RSpec.describe SlackThread do
       it { is_expected.to eq(tracked_thread) }
     end
 
-    describe '#channel' do
-      subject { thread.channel }
+    describe '#channel_id' do
+      subject { thread.channel_id }
       it { is_expected.to eq(event.channel) }
-    end
-
-    describe '#permalink' do
-      subject { thread.permalink }
-      let!(:team) { FactoryBot.create(:team, slack_id: event.team) }
-      it { is_expected.to eq(permalink) }
     end
 
     describe '#team' do
@@ -111,7 +105,7 @@ RSpec.describe SlackThread do
 
     let(:args) do
       {
-        channel: thread.channel,
+        channel: thread.channel_id,
         thread_ts: thread.slack_ts,
         text: message,
         user: 'DEF789'
@@ -139,28 +133,60 @@ RSpec.describe SlackThread do
     it { is_expected.to eq 'Bobby Tables' }
   end
 
-  describe '#update_conversation_details' do
+  describe '#update_metadata' do
+    subject(:thread) { FactoryBot.build_stubbed(:slack_thread, :team) }
+    let(:chat_permalink) { FactoryBot.build(:chat_permalink) }
+
+    before do
+      allow(thread.slack_client).to receive(:conversations_info) { conversations_info }
+      allow(thread.slack_client).to receive(:chat_getPermalink) { chat_permalink }
+      allow(thread).to receive(:save) { true }
+    end
+
+    context 'slack API success' do
+      let(:conversations_info) { FactoryBot.build(:conversations_info) }
+
+      before do
+        thread.update_metadata
+      end
+
+      it { is_expected.to have_received(:save) }
+      its(:slack_client) { is_expected.to have_received(:conversations_info).with(channel: thread.channel_id) }
+      its(:slack_client) do
+        is_expected.to have_received(:chat_getPermalink).with(channel: thread.channel_id, message_ts: thread.slack_ts)
+      end
+      its(:channel_name) { is_expected.to eq 'general' }
+      its(:permalink) { is_expected.to eq 'https://ghostbusters.slack.com/archives/C1H9RESGA/p135854651500008' }
+    end
+
+    context 'slack API error: missing scope' do
+      let(:conversations_info) { raise Slack::Web::Api::Errors::MissingScope, 'missing scope' }
+      its(:update_metadata) { is_expected.to eq false }
+    end
+  end
+
+  describe '#update_replies' do
     subject(:thread) { FactoryBot.build_stubbed(:slack_thread, :team) }
 
     let(:args) do
       {
-        channel: thread.channel,
+        channel: thread.channel_id,
         ts: thread.slack_ts,
         inclusive: true,
         limit: 1
       }
     end
-    let(:reply) { slack_replies.messages.first }
+    let(:reply) { conversations_replies.messages.first }
     let(:user) { FactoryBot.build_stubbed(:user, team: thread.team) }
     let(:reply_users) { FactoryBot.build_stubbed_list(:user, 2, team: thread.team) }
 
     before do
-      allow(thread.slack_client).to receive(:conversations_replies) { slack_replies }
+      allow(thread.slack_client).to receive(:conversations_replies) { conversations_replies }
       allow(thread).to receive(:save) { true }
     end
 
     context 'slack API success' do
-      let(:slack_replies) { FactoryBot.build(:slack_replies) }
+      let(:conversations_replies) { FactoryBot.build(:conversations_replies) }
       before do
         allow(User).to receive(:find_or_create_by).with(
           slack_id: reply['user'], team: thread.team
@@ -171,7 +197,7 @@ RSpec.describe SlackThread do
         allow(User).to receive(:find_or_create_by).with(
           slack_id: reply['reply_users'].last, team: thread.team
         ) { reply_users.last }
-        thread.update_conversation_details
+        thread.update_replies
       end
       it { is_expected.to have_received(:save) }
       its(:slack_client) { is_expected.to have_received(:conversations_replies).with(args) }
@@ -183,8 +209,8 @@ RSpec.describe SlackThread do
     end
 
     context 'slack API error: missing scope' do
-      let(:slack_replies) { raise Slack::Web::Api::Errors::MissingScope, 'missing scope' }
-      its(:update_conversation_details) { is_expected.to eq false }
+      let(:conversations_replies) { raise Slack::Web::Api::Errors::MissingScope, 'missing scope' }
+      its(:update_replies) { is_expected.to eq false }
     end
   end
 

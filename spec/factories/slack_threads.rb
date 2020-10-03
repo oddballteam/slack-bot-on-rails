@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :slack_thread do
-    channel { 'ABC123' }
+    channel_id { 'ABC123' }
     latest_reply_ts { '1601259545.009300' }
     reply_count { Faker::Number.within(range: 1..10) }
     slack_ts { '1601259545.006300' }

@@ -10,11 +10,11 @@ Then visit your Heroku app URL /teams/new, and click the Add to Slack button.
 
 ### Thread Details Are Not Updating
 
-Using the Rails console (ex: `heroku run rails console`), note the last time the UpdateThreadsDetailsJob was enqueued:
+Using the Rails console (ex: `heroku run rails console`), note the last time the UpdateThreadsRepliesJob was enqueued:
 
 ```
 irb> Que::Scheduler::VersionSupport.execute("select * from que_scheduler_audit_enqueued")
-=> [{:scheduler_job_id=>43, :job_class=>"UpdateThreadsDetailsJob", :queue=>"default", :priority=>100, :args=>[], :job_id=>44, :run_at=>2020-09-28 19:00:02 +0000}, {:scheduler_job_id=>134, :job_class=>"UpdateThreadsDetailsJob", :queue=>"default", :priority=>100, :args=>[], :job_id=>135, :run_at=>2020-09-30 15:25:03 +0000}, {:scheduler_job_id=>140, :job_class=>"UpdateThreadsDetailsJob", :queue=>"default", :priority=>100, :args=>[], :job_id=>141, :run_at=>2020-09-30 15:30:00 +0000}]
+=> [{:scheduler_job_id=>43, :job_class=>"UpdateThreadsRepliesJob", :queue=>"default", :priority=>100, :args=>[], :job_id=>44, :run_at=>2020-09-28 19:00:02 +0000}, {:scheduler_job_id=>134, :job_class=>"UpdateThreadsRepliesJob", :queue=>"default", :priority=>100, :args=>[], :job_id=>135, :run_at=>2020-09-30 15:25:03 +0000}, {:scheduler_job_id=>140, :job_class=>"UpdateThreadsRepliesJob", :queue=>"default", :priority=>100, :args=>[], :job_id=>141, :run_at=>2020-09-30 15:30:00 +0000}]
 ```
 
 Next, check the last time the Que Scheduler ran:
