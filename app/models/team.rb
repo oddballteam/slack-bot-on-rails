@@ -42,7 +42,7 @@ class Team < ApplicationRecord
     team ||= Team.find_by(user_access_token: user_access_token)
     team ||= Team.find_by(slack_id: slack_id)
 
-    if team && !team.active?
+    if team
       team.update(active: true, access_token: access_token, user_access_token: user_access_token)
     else
       team = Team.create(
