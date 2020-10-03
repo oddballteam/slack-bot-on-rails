@@ -1,6 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Box, Button, Markdown, Text } from 'grommet'
+import { Box, Button, Text } from 'grommet'
 import { Close, Info } from 'grommet-icons'
 
 const ShowThread = props => {

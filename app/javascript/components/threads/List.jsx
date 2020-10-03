@@ -114,7 +114,7 @@ const ListThreads = props => {
               header: <Text>Closed at</Text>,
             },
             {
-              property: 'channel',
+              property: 'channel_name',
               header: <Text>Channel</Text>,
             },
             {
