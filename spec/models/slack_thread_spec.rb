@@ -36,13 +36,8 @@ RSpec.describe SlackThread do
     subject(:thread) { SlackThread.find_or_initialize_by_event(event) }
 
     let(:event) { FactoryBot.create(:slack_event, :thread) }
-    let(:client) { MockSlackClient.new }
     let(:permalink) { 'https://example.com/' }
     let(:started_at) { Time.parse('2018-01-08 22:12:02 UTC') } # thread_ts as UTC date
-
-    before do
-      allow(Slack::Web::Client).to receive(:new) { client }
-    end
 
     context 'an untracked thread' do
       describe '#started_at' do
@@ -218,17 +213,5 @@ RSpec.describe SlackThread do
     subject { thread.slack_client }
     let(:thread) { FactoryBot.create(:slack_thread, :team) }
     it { is_expected.to eq thread.team.slack_client }
-  end
-end
-
-class MockSlackClient
-  # mock client getPermalink
-  def chat_getPermalink(channel:, message_ts:) # rubocop:disable Naming/MethodName
-    self
-  end
-
-  # mock permalink
-  def permalink
-    'https://example.com/'
   end
 end

@@ -13,6 +13,8 @@ class User < ApplicationRecord
 
   # get the slack user names and image url
   def update_profile_details
+    # https://api.slack.com/methods/users.profile.get
+    # scopes: users.profile:read
     profile = slack_client.users_profile_get(user: slack_id)
     self.display_name = profile['profile']['display_name']
     self.image_url = profile['profile']['image_72']

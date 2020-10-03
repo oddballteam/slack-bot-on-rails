@@ -42,6 +42,8 @@ class SlackThread < ApplicationRecord
 
   # post message to slack thread
   def post_message(message, user)
+    # https://api.slack.com/methods/chat.postEphemeral
+    # scopes: chat:write
     slack_client.chat_postEphemeral(
       channel: channel_id,
       thread_ts: slack_ts,
@@ -86,6 +88,8 @@ class SlackThread < ApplicationRecord
 
   # get the first message of the thread, which provides add'l metadata not contained in replies
   def update_replies
+    # https://api.slack.com/methods/conversations.replies
+    # scopes: channels:history, groups:history, im:history, mpim:history
     replies = slack_client.conversations_replies(channel: channel_id, ts: slack_ts, inclusive: true, limit: 1)
     message = replies['messages'].first
     self.starter ||= User.find_or_create_by(slack_id: message['user'], team: team)

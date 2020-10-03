@@ -6,7 +6,9 @@ class TeamsController < ApplicationController
     render json: Team.all
   end
 
-  def new; end
+  def new
+    @scopes = Team::SCOPES
+  end
 
   # Create Slack Teams as they install the application
   def create
