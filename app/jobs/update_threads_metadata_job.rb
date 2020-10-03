@@ -10,7 +10,7 @@ class UpdateThreadsMetadataJob < ApplicationJob
   self.priority = 100
 
   def run
-    slack_threads = SlackThread.where(permalink: nil)
+    slack_threads = SlackThread.where(channel_name: nil)
 
     SlackThread.transaction do
       slack_threads.each(&:update_metadata)
