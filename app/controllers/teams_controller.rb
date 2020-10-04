@@ -7,19 +7,21 @@ class TeamsController < ApplicationController
   end
 
   def new
+    @client_id = Rails.application.credentials.slack[:client_id]
     @scopes = Team::SCOPES
   end
 
   # Create Slack Teams as they install the application
   def create
-    unless ENV.key?('SLACK_CLIENT_ID') && ENV.key?('SLACK_CLIENT_SECRET')
-      raise 'Missing SLACK_CLIENT_ID or SLACK_CLIENT_SECRET.'
+    credentials = Rails.application.credentials.slack
+    unless credentials[:client_id] && credentials[:client_secret]
+      raise 'Missing :client_id or :client_secret from Rails.application.credentials.slack.'
     end
 
     client = Slack::Web::Client.new
     oauth_params = {
-      client_id: ENV['SLACK_CLIENT_ID'],
-      client_secret: ENV['SLACK_CLIENT_SECRET'],
+      client_id: credentials[:client_id],
+      client_secret: credentials[:client_secret],
       code: params.require(:code) # from Slack redirect
     }
     Rails.logger.info("Oauth params: #{oauth_params.inspect} #{oauth_params}")

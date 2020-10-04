@@ -6,7 +6,7 @@ RSpec.describe EventsController, type: :request do
   subject { response }
 
   describe 'POST /events' do
-    # per https://api.slack.com/apps/A01AAGMMNHJ/event-subscriptions,
+    # per https://api.slack.com/apps/app_id/event-subscriptions,
     # We'll send HTTP POST requests to this URL when events occur.
     # As soon as you enter a URL, we'll send a request with a challenge parameter,
     # and your endpoint must respond with the challenge value.

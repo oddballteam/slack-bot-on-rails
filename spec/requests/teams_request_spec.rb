@@ -29,12 +29,13 @@ RSpec.describe TeamsController, type: :request do
 
     context 'missing API config' do
       before do
-        allow(ENV).to receive(:key?).with('SLACK_CLIENT_ID') { nil }
-        allow(ENV).to receive(:key?).with('SLACK_CLIENT_SECRET') { nil }
+        credentials = Rails.application.credentials.slack
+        allow(credentials).to receive(:[]).with(:client_id) { nil }
+        allow(credentials).to receive(:[]).with(:client_secret) { nil }
       end
 
       it 'raises an exception' do
-        expect { get '/teams/create' }.to raise_error('Missing SLACK_CLIENT_ID or SLACK_CLIENT_SECRET.')
+        expect { get '/teams/create' }.to raise_error(/missing :client_id or :client_secret/i)
       end
     end
 

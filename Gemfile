@@ -38,7 +38,6 @@ gem 'react-rails'
 gem 'slack-ruby-bot'
 
 group :development, :test do
-  gem 'dotenv'
   gem 'factory_bot_rails'
   gem 'pry'
 end
