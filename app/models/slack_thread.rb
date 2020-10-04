@@ -19,7 +19,6 @@ class SlackThread < ApplicationRecord
 
   # find or init thread from SlackEvent
   def self.find_or_initialize_by_event(event)
-    # TODO: started_by
     team = Team.find_by(slack_id: event.team)
     find_by(slack_ts: event.thread_ts) || new(
       channel_id: event.channel,
