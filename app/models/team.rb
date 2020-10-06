@@ -4,10 +4,10 @@
 class Team < ApplicationRecord
   scope :active, -> { where(active: true) }
 
-  validates_uniqueness_of :access_token, message: 'has already been used'
-  validates_presence_of :access_token
-  validates_presence_of :slack_id
-  validates_uniqueness_of :slack_id, message: 'is already registered'
+  validates :access_token, uniqueness: {message: 'has already been used'}
+  validates :access_token, presence: true
+  validates :slack_id, presence: true
+  validates :slack_id, uniqueness: {message: 'is already registered'}
 
   # slack API scopes this app needs to function
   SCOPES = [
@@ -60,6 +60,6 @@ class Team < ApplicationRecord
 
   # slack web client w/ token auth pre-populated
   def slack_client
-    @slack_client ||= Slack::Web::Client.new(token: access_token) unless access_token&.blank?
+    @slack_client ||= Slack::Web::Client.new(token: access_token) if access_token.present?
   end
 end

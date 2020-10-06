@@ -3,8 +3,9 @@
 # model for a Slack User
 class User < ApplicationRecord
   belongs_to :team
-  validates_presence_of :slack_id
-  validates_uniqueness_of :slack_id, message: 'is already registered'
+  has_many :slack_threads, dependent: :destroy, inverse_of: :user
+  validates :slack_id, presence: true
+  validates :slack_id, uniqueness: {message: 'is already registered'}
 
   # slack web client
   def slack_client

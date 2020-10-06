@@ -228,6 +228,73 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: github_events; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.github_events (
+    id bigint NOT NULL,
+    metadata jsonb,
+    state character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: github_events_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.github_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: github_events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.github_events_id_seq OWNED BY public.github_events.id;
+
+
+--
+-- Name: github_installations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.github_installations (
+    id bigint NOT NULL,
+    github_id integer,
+    token_expires_at timestamp without time zone,
+    repository character varying,
+    access_token character varying,
+    metadata jsonb,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: github_installations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.github_installations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: github_installations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.github_installations_id_seq OWNED BY public.github_installations.id;
+
+
+--
 -- Name: que_jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -323,9 +390,9 @@ CREATE TABLE public.schema_migrations (
 CREATE TABLE public.slack_events (
     id bigint NOT NULL,
     metadata jsonb,
+    state character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    state character varying,
     event_time integer
 );
 
@@ -360,15 +427,16 @@ CREATE TABLE public.slack_threads (
     channel_id character varying,
     slack_ts character varying,
     permalink character varying,
-    team_id bigint,
     latest_reply_ts character varying,
     reply_count integer,
     reply_users character varying,
     reply_users_count integer,
-    created_at timestamp(6) without time zone DEFAULT now() NOT NULL,
-    updated_at timestamp(6) without time zone DEFAULT now() NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    team_id bigint,
     started_by integer,
-    channel_name character varying
+    channel_name character varying,
+    issue_url character varying
 );
 
 
@@ -533,6 +601,20 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: github_events id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.github_events ALTER COLUMN id SET DEFAULT nextval('public.github_events_id_seq'::regclass);
+
+
+--
+-- Name: github_installations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.github_installations ALTER COLUMN id SET DEFAULT nextval('public.github_installations_id_seq'::regclass);
+
+
+--
 -- Name: que_jobs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -587,6 +669,22 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: github_events github_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.github_events
+    ADD CONSTRAINT github_events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: github_installations github_installations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.github_installations
+    ADD CONSTRAINT github_installations_pkey PRIMARY KEY (id);
 
 
 --
@@ -871,22 +969,19 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200911172237'),
 ('20200911172238'),
 ('20200911172239'),
-('20200916192837'),
 ('20200924162902'),
 ('20200926151237'),
 ('20200926203141'),
-('20200926230043'),
-('20200927031222'),
-('20200928030555'),
-('20200928154004'),
 ('20200928161831'),
-('20200928184643'),
 ('20200928231618'),
 ('20200928232450'),
 ('20200929020927'),
 ('20200929151409'),
 ('20200929151615'),
 ('20201001204153'),
-('20201003010500');
+('20201003010500'),
+('20201004183047'),
+('20201004223848'),
+('20201006023748');
 
 

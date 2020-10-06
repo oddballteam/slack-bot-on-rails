@@ -4,7 +4,7 @@
 class SlackThread < ApplicationRecord
   acts_as_taggable_on :category, :link
   belongs_to :team
-  belongs_to :user, optional: true, foreign_key: :started_by
+  belongs_to :user, optional: true, foreign_key: :started_by, inverse_of: :slack_threads
   alias_attribute :starter, :user
 
   scope :after, ->(date) { where('started_at >= ?', date) }
@@ -12,7 +12,7 @@ class SlackThread < ApplicationRecord
 
   # convert Slack's ts format into a Rails DateTime
   def self.datetime_from_ts(slack_ts:, default: DateTime.now)
-    Time.at(slack_ts[0..9].to_i)
+    Time.zone.at(slack_ts[0..9].to_i)
   rescue StandardError
     default
   end

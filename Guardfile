@@ -30,12 +30,12 @@ group :specs_before_cops, halt_on_fail: true do
     end
 
     # Rails config changes
-    watch(rails.spec_helper)     { rspec.spec_dir }
-    watch(rails.routes)          { "#{rspec.spec_dir}/routing" }
-    watch(rails.app_controller)  { "#{rspec.spec_dir}/requests" }
+    watch(rails.spec_helper) { rspec.spec_dir }
+    watch(rails.routes) { "#{rspec.spec_dir}/routing" }
+    watch(rails.app_controller) { "#{rspec.spec_dir}/requests" }
 
-    watch(rails.view_dirs)     { |m| rspec.spec.call("requests/#{m[1]}") }
-    watch(rails.layouts)       { |m| rspec.spec.call("requests/#{m[1]}") }
+    watch(rails.view_dirs) { |m| rspec.spec.call("requests/#{m[1]}") }
+    watch(rails.layouts) { |m| rspec.spec.call("requests/#{m[1]}") }
 
     # Turnip features and steps
     watch(%r{^spec/acceptance/(.+)\.feature$})

@@ -18,7 +18,7 @@ class ThreadsController < ApplicationController
       format.json { render json: slack_thread }
       format.html do
         render component: 'threads/Edit',
-               props: { item: slack_thread.attributes },
+               props: {item: slack_thread.attributes},
                tag: 'div',
                prerender: false
       end
@@ -36,8 +36,8 @@ class ThreadsController < ApplicationController
     to = params[:to]
 
     query = SlackThread.all
-    query = query.after(from) unless from.blank?
-    query = query.before(to) unless to.blank?
+    query = query.after(from) if from.present?
+    query = query.before(to) if to.present?
     query
   end
 end

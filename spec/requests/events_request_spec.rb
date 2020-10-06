@@ -33,7 +33,7 @@ RSpec.describe EventsController, type: :request do
         }
       end
       let(:json) do
-        { challenge: challenge }.to_json
+        {challenge: challenge}.to_json
       end
 
       before do
@@ -44,23 +44,29 @@ RSpec.describe EventsController, type: :request do
       its(:body) { is_expected.to eq json }
     end
 
-    context 'app_mention' do
-      let(:event) { FactoryBot.build(:slack_event, :app_mention) }
+    describe 'other events' do
+      let(:attrs) { FactoryBot.attributes_for(:slack_event, :app_mention) }
+      let!(:event) { SlackEvent.new(metadata: attrs[:metadata]) }
+      let(:success) { true }
 
       before do
-        post '/events', params: event.metadata
+        expect(SlackEvent).to receive(:new).with(hash_including(:metadata)) { event }
+        expect(event).to receive(:save) { success }
+        allow(event).to receive(:enqueue_job)
+        post '/events', params: attrs[:metadata]
       end
 
-      it { is_expected.to have_http_status(:created) }
-    end
-
-    context 'bad data' do
-      before do
-        allow_any_instance_of(SlackEvent).to receive(:save) { false }
-        post '/events'
+      context 'app installation' do
+        it { is_expected.to have_http_status(:created) }
+        it 'enqueued the job' do
+          expect(event).to have_received(:enqueue_job)
+        end
       end
 
-      it { is_expected.to have_http_status(:ok) }
+      context 'bad data' do
+        let(:success) { false }
+        it { is_expected.to have_http_status(:ok) }
+      end
     end
   end
 end

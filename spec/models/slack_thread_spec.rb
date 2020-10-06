@@ -6,7 +6,7 @@ RSpec.describe SlackThread do
   context 'date range queries' do
     let(:last_month) { 1.month.ago.to_date }
     let(:last_months_threads) { [FactoryBot.create(:slack_thread, :team, started_at: last_month)] }
-    let(:this_month) { Date.today }
+    let(:this_month) { Time.zone.today }
     let(:this_months_threads) { [FactoryBot.create(:slack_thread, :team, started_at: this_month)] }
     let(:threads) { last_months_threads.concat(last_months_threads) }
 
@@ -28,7 +28,7 @@ RSpec.describe SlackThread do
 
   describe '.datetime_from_ts' do
     subject { SlackThread.datetime_from_ts(slack_ts: 123, default: yesterday) }
-    let(:yesterday) { DateTime.yesterday }
+    let(:yesterday) { Time.zone.yesterday }
     it { is_expected.to eq yesterday }
   end
 
@@ -37,7 +37,7 @@ RSpec.describe SlackThread do
 
     let(:event) { FactoryBot.create(:slack_event, :thread) }
     let(:permalink) { 'https://example.com/' }
-    let(:started_at) { Time.parse('2018-01-08 22:12:02 UTC') } # thread_ts as UTC date
+    let(:started_at) { Time.zone.parse('2018-01-08 22:12:02 UTC') } # thread_ts as UTC date
 
     context 'an untracked thread' do
       describe '#started_at' do

@@ -9,11 +9,11 @@ class ListThreadCategoriesJob < ApplicationJob
   # We use the Linux priority scale - a lower number is more important.
   self.priority = 100
 
-  def run(event_id:, options: nil) # rubocop:disable Lint/UnusedMethodArgument
+  def run(event_id:, options: nil)
     message = 'An unexpected error occurred. :shrug:'
     event = SlackEvent.find(event_id)
     slack_thread = SlackThread.find_or_initialize_by(slack_ts: event.thread_ts)
-    category_list = slack_thread.category_list.blank? ? 'None. _Yet_' : slack_thread.category_list
+    category_list = slack_thread.category_list.presence || 'None. _Yet_'
 
     SlackThread.transaction do
       message = if slack_thread.persisted?

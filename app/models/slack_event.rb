@@ -2,8 +2,8 @@
 
 # store metadata from Slack events
 class SlackEvent < ApplicationRecord
-  validates_presence_of :metadata
-  validates_uniqueness_of :event_time
+  validates :metadata, presence: true
+  validates :event_time, uniqueness: true
 
   COMMANDS = {
     'add category' => AddThreadCategoryJob,

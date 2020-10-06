@@ -22,11 +22,11 @@ RSpec.describe ThreadsController, type: :request do
     context 'date queries' do
       let(:last_month) { 1.month.ago.to_date }
       let!(:last_months_threads) { [FactoryBot.create(:slack_thread, :team, started_at: last_month)] }
-      let(:this_month) { Date.today }
+      let(:this_month) { Time.zone.today }
       let!(:this_months_threads) { [FactoryBot.create(:slack_thread, :team, started_at: this_month)] }
 
       it 'responds with last month\'s threads' do
-        get '/threads', params: { from: last_month.iso8601, to: this_month.iso8601 }, as: :json
+        get '/threads', params: {from: last_month.iso8601, to: this_month.iso8601}, as: :json
         expect(response.body).to eq(last_months_threads.to_json)
       end
     end

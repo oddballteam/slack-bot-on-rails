@@ -6,6 +6,7 @@ if ActiveRecord.gem_version >= Gem::Version.new('5.0')
 else
   class AddMissingIndexesOnTaggings < ActiveRecord::Migration; end
 end
+# rubocop:disable Metrics/BlockLength
 AddMissingIndexesOnTaggings.class_eval do
   def change
     add_index ActsAsTaggableOn.taggings_table, :tag_id unless index_exists? ActsAsTaggableOn.taggings_table, :tag_id
@@ -24,8 +25,16 @@ AddMissingIndexesOnTaggings.class_eval do
       add_index ActsAsTaggableOn.taggings_table, %i[tagger_id tagger_type]
     end
 
-    unless index_exists? ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type tagger_id context], name: 'taggings_idy'
+    unless index_exists? ActsAsTaggableOn.taggings_table,
+                         %i[
+                           taggable_id
+                           taggable_type
+                           tagger_id
+                           context
+                         ],
+                         name: 'taggings_idy'
       add_index ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type tagger_id context], name: 'taggings_idy'
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

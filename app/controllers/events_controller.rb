@@ -6,7 +6,7 @@ class EventsController < ApplicationController
 
   def create
     if url_verification?
-      render json: { challenge: params[:challenge] }
+      render json: {challenge: params[:challenge]}
     else
       event = SlackEvent.new(metadata: params.permit!)
       if event.save
