@@ -28,7 +28,7 @@ RSpec.describe CreateIssueJob do
     end
 
     it 'saves issue_url' do
-      expect(slack_thread).to have_received(:update).with(issue_url: issue.url)
+      expect(slack_thread).to have_received(:update).with(issue_url: issue.html_url)
     end
   end
 end
