@@ -102,6 +102,27 @@ RSpec.describe SlackThread do
       {
         channel: thread.channel_id,
         thread_ts: thread.slack_ts,
+        text: message
+      }
+    end
+    let(:message) { 'Halo Whirrled' }
+    let(:thread) { FactoryBot.build_stubbed(:slack_thread, :team) }
+
+    before do
+      allow(thread.slack_client).to receive(:chat_postMessage)
+      thread.post_message(message)
+    end
+
+    it { is_expected.to have_received(:chat_postMessage).with(args) }
+  end
+
+  describe '#post_ephemeral_reply' do
+    subject { thread.slack_client }
+
+    let(:args) do
+      {
+        channel: thread.channel_id,
+        thread_ts: thread.slack_ts,
         text: message,
         user: 'DEF789'
       }
@@ -111,7 +132,7 @@ RSpec.describe SlackThread do
 
     before do
       allow(thread.slack_client).to receive(:chat_postEphemeral)
-      thread.post_message(message, 'DEF789')
+      thread.post_ephemeral_reply(message, 'DEF789')
     end
 
     it { is_expected.to have_received(:chat_postEphemeral).with(args) }

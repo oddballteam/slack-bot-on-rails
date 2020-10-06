@@ -27,6 +27,6 @@ class ResolveThreadJob < ApplicationJob
     end
 
     # post message in slack thread
-    slack_thread.post_message(message, event.user)
+    slack_thread.post_ephemeral_reply(message, event.user)
   end
 end

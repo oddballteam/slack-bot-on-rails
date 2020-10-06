@@ -26,5 +26,11 @@ class CreateIssueJob < ApplicationJob
       # destroy the job when finished
       destroy
     end
+
+    # post link to issue in the slack thread
+    if issue&.url
+      message = "Issue created: #{issue.url} :ticket:"
+      slack_thread.post_message(message)
+    end
   end
 end

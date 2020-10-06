@@ -17,6 +17,7 @@ class Team < ApplicationRecord
     'chat:write.customize', # affects postMessage/postEphemeral appearance
     'chat:write.public', # not used quite yet, but nice to have
     # chat.postEphemeral
+    # chat.postMessage
     'chat:write',
     # conversations.info:
     'channels:read',

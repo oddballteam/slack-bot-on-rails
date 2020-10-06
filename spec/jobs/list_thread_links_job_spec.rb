@@ -9,7 +9,7 @@ RSpec.describe ListThreadLinksJob do
     expect(event).to receive(:update).with(state: 'replied')
     expect(SlackThread).to receive(:find_or_initialize_by).with(slack_ts: event.thread_ts) { thread }
     allow(thread).to receive(:persisted?).and_return(persisted)
-    allow(thread).to receive(:post_message)
+    allow(thread).to receive(:post_ephemeral_reply)
     ListThreadLinksJob.run(event_id: event.id)
   end
 
@@ -17,7 +17,7 @@ RSpec.describe ListThreadLinksJob do
     let(:thread) { FactoryBot.build_stubbed(:slack_thread) }
 
     it 'replies "none"' do
-      expect(thread).to have_received(:post_message).with(/none/i, 'U061F7AUR')
+      expect(thread).to have_received(:post_ephemeral_reply).with(/none/i, 'U061F7AUR')
     end
   end
 
@@ -25,7 +25,7 @@ RSpec.describe ListThreadLinksJob do
     let(:thread) { FactoryBot.build_stubbed(:slack_thread, :links) }
 
     it 'replies with links' do
-      expect(thread).to have_received(:post_message).with(/#{thread.link_list.join("\n- ")}/, 'U061F7AUR')
+      expect(thread).to have_received(:post_ephemeral_reply).with(/#{thread.link_list.join("\n- ")}/, 'U061F7AUR')
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe ListThreadLinksJob do
     let(:thread) { FactoryBot.build_stubbed(:slack_thread) }
 
     it 'replies "not tracking"' do
-      expect(thread).to have_received(:post_message).with(/not tracking/, 'U061F7AUR')
+      expect(thread).to have_received(:post_ephemeral_reply).with(/not tracking/, 'U061F7AUR')
     end
   end
 end

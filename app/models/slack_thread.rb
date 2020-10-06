@@ -40,7 +40,18 @@ class SlackThread < ApplicationRecord
   end
 
   # post message to slack thread
-  def post_message(message, user)
+  def post_message(message)
+    # https://api.slack.com/methods/chat.postMessage
+    # scopes: chat:write
+    slack_client.chat_postMessage(
+      channel: channel_id,
+      thread_ts: slack_ts,
+      text: message
+    )
+  end
+
+  # post private ephemeral reply to slack user
+  def post_ephemeral_reply(message, user)
     # https://api.slack.com/methods/chat.postEphemeral
     # scopes: chat:write
     slack_client.chat_postEphemeral(
