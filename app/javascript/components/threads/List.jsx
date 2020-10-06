@@ -114,6 +114,10 @@ const ListThreads = props => {
               header: <Text>Closed at</Text>,
             },
             {
+              property: 'issue_url',
+              header: <Text>Issue link</Text>,
+            },
+            {
               property: 'channel_name',
               header: <Text>Channel</Text>,
             },
