@@ -16,6 +16,7 @@ class ResolveThreadJob < ApplicationJob
 
     SlackThread.transaction do
       message = if slack_thread.update(ended_at: Time.zone.now)
+                  CloseIssueJob.enqueue(thread_id: slack_thread.id)
                   'This thread has been marked as resolved. :white_check_mark:'
                 else
                   "There were errors. #{slack_thread.errors.full_messages.join('. ')}. :shrug:"

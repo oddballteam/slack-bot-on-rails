@@ -39,6 +39,11 @@ class SlackThread < ApplicationRecord
     "<#{Rails.application.routes.url_helpers.thread_url(id, host: host, format: :json)}|this thread>"
   end
 
+  # issue number, parsed from the issue url
+  def issue_number
+    issue_url[/\d+\Z/].to_i
+  end
+
   # post message to slack thread
   def post_message(message)
     # https://api.slack.com/methods/chat.postMessage

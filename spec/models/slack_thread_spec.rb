@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe SlackThread do
-  let(:thread) { FactoryBot.build_stubbed(:slack_thread, :user) }
+  let(:thread) { FactoryBot.build_stubbed(:slack_thread, :user, :issue) }
 
   context 'date range queries' do
     let(:last_month) { 1.month.ago.to_date }
@@ -93,6 +93,11 @@ RSpec.describe SlackThread do
     context 'ENV var not set' do
       it { is_expected.to include 'localhost:3000' }
     end
+  end
+
+  describe '#issue_number' do
+    subject { thread.issue_number }
+    it { is_expected.to eq 123 }
   end
 
   describe '#post_message' do

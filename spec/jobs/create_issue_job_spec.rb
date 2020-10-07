@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: this should be converted to create a single issue, and run immediately after create thread
 RSpec.describe CreateIssueJob do
   let(:issue) { FactoryBot.build(:github_issue) }
   let(:slack_thread) { FactoryBot.build_stubbed(:slack_thread) }
