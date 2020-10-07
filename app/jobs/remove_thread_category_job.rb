@@ -14,9 +14,9 @@ class RemoveThreadCategoryJob < ApplicationJob
     message = 'An unexpected error occurred. :shrug:'
     event = SlackEvent.find(event_id)
     slack_thread = SlackThread.find_or_initialize_by_event(event)
-    slack_thread.category_list.remove(options)
 
     SlackThread.transaction do
+      slack_thread.category_list.remove(options)
       message = if slack_thread.save
                   "#{options} removed. Categories: #{slack_thread.category_list}."
                 else
@@ -26,6 +26,12 @@ class RemoveThreadCategoryJob < ApplicationJob
       event.update(state: 'replied')
       # destroy the job when finished
       destroy
+    end
+
+    # update issue labels
+    installation = GithubInstallation.last
+    if installation&.repository&.present?
+      installation.label_issue(issue_number: slack_thread.issue_number, labels: slack_thread.category_list)
     end
 
     # post message in slack thread

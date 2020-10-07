@@ -9,7 +9,7 @@ FactoryBot.define do
     started_at { Faker::Date.in_date_period(month: 1) }
 
     trait :categories do
-      category_list { 'one, two' }
+      category_list { %w[one two] }
     end
 
     trait :issue do
@@ -17,7 +17,7 @@ FactoryBot.define do
     end
 
     trait :links do
-      link_list { 'https://www.example.com, https://www.test.com' }
+      link_list { ['https://www.example.com', 'https://www.test.com'] }
     end
 
     trait :team do

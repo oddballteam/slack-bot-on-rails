@@ -87,4 +87,21 @@ RSpec.describe GithubInstallation, type: :model do
 
     it { is_expected.to eq github_issue }
   end
+
+  describe '#label_issue' do
+    let(:github_issue) { FactoryBot.build(:github_issue) }
+    let(:installation) { FactoryBot.build(:github_installation, :access_token) }
+    let(:labels) { %w[one two three] }
+
+    subject do
+      installation.label_issue(issue_number: 1234, labels: labels)
+    end
+
+    before do
+      expect(Octokit::Client).to receive(:new).with(access_token: installation.access_token) { client }
+      expect(client).to receive(:update_issue).with(installation.repository, 1234, labels: labels) { github_issue }
+    end
+
+    it { is_expected.to eq github_issue }
+  end
 end

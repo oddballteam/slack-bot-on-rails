@@ -31,6 +31,11 @@ class GithubInstallation < ApplicationRecord
     client.create_issue(repository, title, body, labels: labels)
   end
 
+  # create a github issue on the given repository with the given summary/title
+  def label_issue(issue_number:, labels:)
+    client.update_issue(repository, issue_number, labels: labels)
+  end
+
   private
 
   def client
