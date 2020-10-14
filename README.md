@@ -1,5 +1,18 @@
 # README
 
+## Installation
+
+### Create Your Slack App (optional)
+
+1. https://api.slack.com/apps
+1. Click the button:
+
+    ![Create New App](readme/create-new-app.png)
+1. Fill and submit the form:
+
+    ![Create Slack App](readme/create-slack-app.png)
+1. `bundle exec rails credentials:edit`, then update the secrets from the screen (add screenshot).
+
 ## Deploy to Heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/oddballteam/slack-bot-on-rails)
