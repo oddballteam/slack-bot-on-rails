@@ -57,14 +57,16 @@ class SlackThread < ApplicationRecord
 
   # post private ephemeral reply to slack user
   def post_ephemeral_reply(message, user)
+    # temporary hack for testing:
+    post_message(message)
     # https://api.slack.com/methods/chat.postEphemeral
     # scopes: chat:write
-    slack_client.chat_postEphemeral(
-      channel: channel_id,
-      thread_ts: slack_ts,
-      text: message,
-      user: user
-    )
+    # slack_client.chat_postEphemeral(
+    #   channel: channel_id,
+    #   thread_ts: slack_ts,
+    #   text: message,
+    #   user: user
+    # )
   end
 
   # the names for the reply_users ids

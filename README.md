@@ -12,8 +12,9 @@
 
     ![Create Slack App](readme/create-slack-app.png)
 1. `bundle exec rails credentials:edit`, then update the secrets from the screen (add screenshot).
+1. https://api.slack.com/apps/app-id/event-subscriptions
 
-## Deploy to Heroku
+### Deploy to Heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/oddballteam/slack-bot-on-rails)
 
