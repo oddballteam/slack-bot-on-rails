@@ -11,14 +11,31 @@
 1. Fill and submit the form:
 
     ![Create Slack App](readme/create-slack-app.png)
-1. `bundle exec rails credentials:edit`, then update the secrets from the screen (add screenshot).
-1. https://api.slack.com/apps/app-id/event-subscriptions
+1. In your console, `bundle exec rails credentials:edit`, then update the secrets from the App Credentials section.
 
 ### Deploy to Heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/oddballteam/slack-bot-on-rails)
 
-Then visit your Heroku app URL /teams/new, and click the Add to Slack button.
+### Update Slack App Configuration
+
+1. https://api.slack.com/apps
+1. Click your new app
+1. Click Event Subscriptions
+    * Enable Events: On
+    * Request URL: https://your-heroku-app.herokuapp.com/teams/create
+    * Subscribe to bot events:
+        * app_home_opened
+        * app_mention
+        * app_mentions:read
+        * app_uninstalled
+        * tokens_revoked
+1. Click Oauth & Permissions
+    * Click Add New Redirect URL, enter: https://your-heroku-app.herokuapp.com/teams/create
+
+### Install to Slack Workspace
+
+Then visit https://your-heroku-app.herokuapp.com/teams/new, and click the Add to Slack button.
 
 ## Troubleshooting
 
