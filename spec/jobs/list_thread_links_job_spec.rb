@@ -21,7 +21,7 @@ RSpec.describe ListThreadLinksJob do
     end
   end
 
-  context 'categories' do
+  context 'links' do
     let(:thread) { FactoryBot.build_stubbed(:slack_thread, :links) }
 
     it 'replies with links' do

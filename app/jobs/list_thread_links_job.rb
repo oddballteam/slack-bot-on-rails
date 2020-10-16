@@ -15,7 +15,7 @@ class ListThreadLinksJob < ApplicationJob
     slack_thread = SlackThread.find_or_initialize_by(slack_ts: event.thread_ts)
     links_list = slack_thread.link_list.blank? ? 'None. _Yet_' : "- #{slack_thread.link_list.join("\n- ")}"
 
-    SlackThread.transaction do
+    SlackEvent.transaction do
       message = if slack_thread.persisted?
                   "🔗Links: #{links_list}."
                 else

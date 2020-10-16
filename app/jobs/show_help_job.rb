@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# reply in Slack thread w/ the categories for the current thread.
-class ListThreadCategoriesJob < ApplicationJob
+# reply in Slack thread w/ the links for the current thread.
+class ShowHelpJob < ApplicationJob
   # Default settings for this job. These are optional - without them, jobs
   # will default to priority 100 and run immediately.
   # self.run_at = proc { 1.minute.from_now }
@@ -10,18 +10,11 @@ class ListThreadCategoriesJob < ApplicationJob
   self.priority = 100
 
   def run(event_id:, options: nil)
-    message = 'An unexpected error occurred. :shrug:'
+    message = ApplicationController.render(template: 'slack_events/index.slack', layout: nil)
     event = SlackEvent.find(event_id)
     slack_thread = SlackThread.find_or_initialize_by(slack_ts: event.thread_ts)
-    category_list = slack_thread.category_list.presence || 'None. _Yet_'
 
     SlackEvent.transaction do
-      message = if slack_thread.persisted?
-                  "Categories: #{category_list}. 📚"
-                else
-                  'We are not tracking this thread. Tell us to track it.'
-                end
-
       event.update(state: 'replied')
       # destroy the job when finished
       destroy

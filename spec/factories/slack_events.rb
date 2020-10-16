@@ -62,7 +62,16 @@ FactoryBot.define do
     trait :extraneous_spaces do
       thread
       metadata do
-        megahash['event'].merge!('text' => '<@BOT>  link      https://www.example.com')
+        megahash['event'].merge!('text' => '<@BOT>
+            link      https://www.example.com  ')
+        megahash
+      end
+    end
+
+    trait :halp do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> halp')
         megahash
       end
     end
