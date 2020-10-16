@@ -12,7 +12,7 @@ class ShowHelpJob < ApplicationJob
   def run(event_id:, options: nil)
     message = ApplicationController.render(template: 'slack_events/index.slack', layout: nil)
     event = SlackEvent.find(event_id)
-    slack_thread = SlackThread.find_or_initialize_by(slack_ts: event.thread_ts)
+    slack_thread = SlackThread.find_or_initialize_by_event(event)
 
     SlackEvent.transaction do
       event.update(state: 'replied')

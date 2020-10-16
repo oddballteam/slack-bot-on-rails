@@ -10,7 +10,7 @@ RSpec.describe ShowHelpJob do
   before do
     expect(SlackEvent).to receive(:find).with(event.id) { event }
     expect(event).to receive(:update).with(state: 'replied')
-    expect(SlackThread).to receive(:find_or_initialize_by).with(slack_ts: event.thread_ts) { thread }
+    expect(SlackThread).to receive(:find_or_initialize_by_event).with(event) { thread }
     # allow(thread).to receive(:persisted?).and_return(persisted)
     allow(thread).to receive(:post_ephemeral_reply)
     ShowHelpJob.run(event_id: event.id)

@@ -10,6 +10,7 @@ class CreateThreadJob < ApplicationJob
   self.priority = 10
 
   def run(event_id:, options: nil)
+    help = ApplicationController.render(template: 'slack_events/index.slack', layout: nil)
     message = 'An unexpected error occurred. :shrug:'
     event = SlackEvent.find(event_id)
     slack_thread = SlackThread.find_or_initialize_by_event(event)
@@ -31,5 +32,7 @@ class CreateThreadJob < ApplicationJob
 
     # post reply to slack user
     slack_thread.post_ephemeral_reply(message, event.user)
+    # post help to slack user
+    slack_thread.post_ephemeral_reply(help, event.user)
   end
 end
