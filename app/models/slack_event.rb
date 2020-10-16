@@ -29,7 +29,7 @@ class SlackEvent < ApplicationRecord
   # convert chat commands the background jobs which processes them
   def enqueue_job
     COMMANDS.each do |command, job|
-      next unless (matches = text&.match(/> (?<command>#{command})(\s(?<options>.*))?$/))
+      next unless (matches = text&.match(/>\s+(?<command>#{command})(\s+(?<options>.*))?$/))
 
       return job.enqueue(event_id: id, options: matches['options'])
     end

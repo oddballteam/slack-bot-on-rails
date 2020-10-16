@@ -71,6 +71,18 @@ RSpec.describe SlackEvent, type: :model do
       it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
     end
 
+    context 'extraneous spaces' do
+      subject { AddThreadLinkJob }
+      let(:event) { FactoryBot.build_stubbed(:slack_event, :extraneous_spaces) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: 'https://www.example.com') }
+    end
+
+    # context 'help' do
+    #   subject { ListThreadCategoriesJob }
+    #   let(:event) { FactoryBot.build_stubbed(:slack_event, :list_categories) }
+    #   it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
+    # end
+
     context 'link' do
       subject { AddThreadLinkJob }
       let(:event) { FactoryBot.build(:slack_event, :link) }
