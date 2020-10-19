@@ -15,7 +15,7 @@
 
 ### Deploy to Heroku
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/oddballteam/slack-bot-on-rails)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/department-of-veterans-affairs/va.gov-support-slackbot)
 
 ### Update Slack App Configuration
 
@@ -67,3 +67,7 @@ If not, enqueue it:
 ```
 irb> Que::Scheduler::SchedulerJob.enqueue
 ```
+
+## Architecture
+
+Slack events are POSTed to /slack_events

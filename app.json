@@ -1,11 +1,10 @@
 {
   "name": "Slack Support Tracker Bot",
-  "description": "A slack bot that responds to `track`, running on Rails with a React front-end. Update SLACK_API_TOKEN with your token value.",
-  "repository": "https://github.com/oddballteam/slack-bot-on-rails",
-  "keywords": ["slack", "rails", "bot"],
-  "env": {
-    "SLACK_API_TOKEN": {
-      "description": "You Slack API token"
-    }
-  }
+  "description": "A slack bot that responds to `track`, running on Rails with a React front-end.",
+  "repository": "https://github.com/department-of-veterans-affairs/va.gov-support-slackbot",
+  "keywords": [
+    "slack",
+    "github",
+    "bot"
+  ]
 }

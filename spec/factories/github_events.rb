@@ -33,7 +33,7 @@ FactoryBot.define do
             'repositories_url' => 'https://api.github.com/installation/repositories',
             'html_url' => 'https://github.com/settings/installations/12204791',
             'app_id' => 83_447,
-            'app_slug' => 'oddball-support-bot',
+            'app_slug' => 'va.gov-support-slackbot',
             'target_id' => 12_345,
             'target_type' => 'User',
             'permissions' => {
