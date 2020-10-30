@@ -16,7 +16,6 @@ RSpec.describe ShowHelpJob do
     ShowHelpJob.run(event_id: event.id)
   end
 
-
   it 'replies with help' do
     expect(thread).to have_received(:post_ephemeral_reply).with(help, 'U061F7AUR')
   end

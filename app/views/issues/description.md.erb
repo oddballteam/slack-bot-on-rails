@@ -1,0 +1,19 @@
+# Summary
+
+# Metadata
+
+<%= t('started_at') %>: <%= slack_thread.started_at %>
+<%= t('created_at') %>: <%= slack_thread.created_at %>
+<%= t('latest_reply_ts') %>: <%= slack_thread.latest_reply_ts %>
+<%= t('ended_at') %>: <%= slack_thread.ended_at %>
+<%= t('channel_name') %>: <%= slack_thread.channel_name %>
+<%= t('started_by_name') %>: <%= slack_thread.started_by_name %>
+<%= t('reply_users_names') %>: <%= slack_thread.reply_users_names %>
+<%= t('reply_users_count') %>: <%= slack_thread.reply_users_count %>
+<%= t('reply_count') %>: <%= slack_thread.reply_count %>
+
+# Links :link:
+
+<% slack_thread.link_list.each do |link| %>
+- <%= link %>
+<% end %>

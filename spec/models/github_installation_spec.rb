@@ -104,4 +104,35 @@ RSpec.describe GithubInstallation, type: :model do
 
     it { is_expected.to eq github_issue }
   end
+
+  describe '#link_issue' do
+    let(:description) do
+      ApplicationController.render(
+        template: 'issues/description.md',
+        layout: nil,
+        locals: {slack_thread: slack_thread}
+      )
+    end
+    let(:github_issue) { FactoryBot.build(:github_issue) }
+    let(:installation) { FactoryBot.build(:github_installation, :access_token) }
+    let(:links) { %w[https://f1337.github.io https://github.com] }
+    let(:slack_thread) { FactoryBot.build_stubbed(:slack_thread, :links, :issue) }
+
+    subject do
+      installation.link_issue(slack_thread)
+    end
+
+    before do
+      expect(Octokit::Client).to receive(:new).with(access_token: installation.access_token) { client }
+      expect(client).to receive(:update_issue).with(
+        installation.repository,
+        slack_thread.issue_number,
+        body: description
+      ) {
+        github_issue
+      }
+    end
+
+    it { is_expected.to eq github_issue }
+  end
 end

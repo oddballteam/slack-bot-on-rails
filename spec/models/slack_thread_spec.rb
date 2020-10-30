@@ -121,7 +121,7 @@ RSpec.describe SlackThread do
     it { is_expected.to have_received(:chat_postMessage).with(args) }
   end
 
-  describe '#post_ephemeral_reply' do
+  describe '#post_ephemeral_reply', skip: true do
     subject { thread.slack_client }
 
     let(:args) do

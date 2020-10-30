@@ -17,7 +17,7 @@ class ListThreadCategoriesJob < ApplicationJob
 
     SlackEvent.transaction do
       message = if slack_thread.persisted?
-                  "Categories: #{category_list}. 📚"
+                  "Categories: #{category_list}. :books:"
                 else
                   'We are not tracking this thread. Tell us to track it.'
                 end

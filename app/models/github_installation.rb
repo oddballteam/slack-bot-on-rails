@@ -31,9 +31,19 @@ class GithubInstallation < ApplicationRecord
     client.create_issue(repository, title, body, labels: labels)
   end
 
-  # create a github issue on the given repository with the given summary/title
+  # set the github issue labels
   def label_issue(issue_number:, labels:)
     client.update_issue(repository, issue_number, labels: labels)
+  end
+
+  # update the github issue description with links
+  def link_issue(slack_thread)
+    description = ApplicationController.render(
+      template: 'issues/description.md',
+      layout: nil,
+      locals: {slack_thread: slack_thread}
+    )
+    client.update_issue(repository, slack_thread.issue_number, body: description)
   end
 
   private
