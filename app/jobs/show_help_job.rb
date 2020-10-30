@@ -10,7 +10,6 @@ class ShowHelpJob < ApplicationJob
   self.priority = 100
 
   def run(event_id:, options: nil)
-    message = ApplicationController.render(template: 'slack_events/index.slack', layout: nil)
     event = SlackEvent.find(event_id)
     slack_thread = SlackThread.find_or_initialize_by_event(event)
 
@@ -21,6 +20,7 @@ class ShowHelpJob < ApplicationJob
     end
 
     # post message in slack thread
+    message = render('slack_thread/help.slack')
     slack_thread.post_ephemeral_reply(message, event.user)
   end
 end

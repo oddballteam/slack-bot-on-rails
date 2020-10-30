@@ -1,0 +1,8 @@
+<% if !slack_thread.errors.empty? %>
+  :shrug:There were errors. <%= slack_thread.errors.full_messages.join('. ') %>.
+<% elsif slack_thread.persisted? %>
+  <%= flash %>
+  :label:Categories: <%= slack_thread.category_list.presence || 'None. _Yet_' %>.
+<% else %>
+  We are not tracking this thread. Tell us to track it.
+<% end %>

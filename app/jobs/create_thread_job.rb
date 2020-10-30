@@ -10,20 +10,17 @@ class CreateThreadJob < ApplicationJob
   self.priority = 10
 
   def run(event_id:, options: nil)
-    help = ApplicationController.render(template: 'slack_events/index.slack', layout: nil)
-    message = 'An unexpected error occurred. :shrug:'
     event = SlackEvent.find(event_id)
+    flash = ''
     slack_thread = SlackThread.find_or_initialize_by_event(event)
 
     SlackThread.transaction do
-      message = if slack_thread.persisted?
-                  'This thread is already being tracked. :white_check_mark:'
-                elsif slack_thread.save
-                  CreateIssueJob.enqueue(thread_id: slack_thread.id)
-                  "Now tracking #{slack_thread.formatted_link}. :white_check_mark:"
-                else
-                  "There were errors. #{slack_thread.errors.full_messages.join('. ')}. :shrug:"
-                end
+      flash = if slack_thread.persisted?
+                'This thread is already being tracked'
+              else
+                CreateIssueJob.enqueue(thread_id: slack_thread.id) if slack_thread.save
+                'Now tracking'
+              end
 
       event.update(state: 'replied')
       # destroy the job when finished
@@ -31,8 +28,10 @@ class CreateThreadJob < ApplicationJob
     end
 
     # post reply to slack user
+    message = render('slack_thread/track.slack', flash: flash, slack_thread: slack_thread)
     slack_thread.post_ephemeral_reply(message, event.user)
     # post help to slack user
+    help = render('slack_thread/help.slack')
     slack_thread.post_ephemeral_reply(help, event.user)
   end
 end

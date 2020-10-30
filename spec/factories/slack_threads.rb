@@ -8,6 +8,12 @@ FactoryBot.define do
     slack_ts { '1601259545.006300' }
     started_at { Faker::Date.in_date_period(month: 1) }
 
+    trait :errors do
+      after(:stub) do |slack_thread|
+        slack_thread.errors.add(:issue_number, 'is bad')
+      end
+    end
+
     trait :categories do
       category_list { %w[one two] }
     end

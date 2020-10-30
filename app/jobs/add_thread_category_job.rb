@@ -11,17 +11,12 @@ class AddThreadCategoryJob < ApplicationJob
   self.priority = 100
 
   def run(event_id:, options:)
-    message = 'An unexpected error occurred. :shrug:'
     event = SlackEvent.find(event_id)
     slack_thread = SlackThread.find_or_initialize_by_event(event)
 
     SlackThread.transaction do
       slack_thread.category_list.add(options)
-      message = if slack_thread.save
-                  "#{options} added. Categories: #{slack_thread.category_list}."
-                else
-                  "There were errors. #{slack_thread.errors.full_messages.join('. ')}. :shrug:"
-                end
+      slack_thread.save
 
       event.update(state: 'replied')
       # destroy the job when finished
@@ -35,6 +30,7 @@ class AddThreadCategoryJob < ApplicationJob
     end
 
     # post message in slack thread
+    message = render('slack_thread/labels.slack', flash: "#{options} added.", slack_thread: slack_thread)
     slack_thread.post_ephemeral_reply(message, event.user)
   end
 end

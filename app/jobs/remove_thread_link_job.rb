@@ -11,26 +11,19 @@ class RemoveThreadLinkJob < ApplicationJob
   self.priority = 100
 
   def run(event_id:, options:)
-    message = 'An unexpected error occurred. :shrug:'
     event = SlackEvent.find(event_id)
     slack_thread = SlackThread.find_or_initialize_by_event(event)
-    slack_thread.link_list.remove(options)
 
     SlackThread.transaction do
-      message = if slack_thread.save
-                  <<~MESSAGE
-                    #{options} removed. 🔗Links:\n- #{slack_thread.link_list.join("\n- ")}.
-                  MESSAGE
-                else
-                  "There were errors. #{slack_thread.errors.full_messages.join('. ')}. :shrug:"
-                end
-
+      slack_thread.link_list.remove(options)
+      slack_thread.save
       event.update(state: 'replied')
       # destroy the job when finished
       destroy
     end
 
     # post message in slack thread
+    message = render('slack_thread/links.slack', flash: "#{options} removed.", slack_thread: slack_thread)
     slack_thread.post_ephemeral_reply(message, event.user)
   end
 end

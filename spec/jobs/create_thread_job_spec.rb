@@ -34,6 +34,7 @@ RSpec.describe CreateThreadJob do
 
   context 'save fails' do
     let(:success) { false }
+    subject(:thread) { FactoryBot.build_stubbed(:slack_thread, :errors) }
     it { is_expected.to have_received(:post_ephemeral_reply).with(/errors/i, 'U061F7AUR') }
     it { is_expected.to have_received(:post_ephemeral_reply).with(/Help/i, 'U061F7AUR') }
   end

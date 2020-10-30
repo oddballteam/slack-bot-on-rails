@@ -3,7 +3,7 @@
 RSpec.describe ShowHelpJob do
   let(:event) { FactoryBot.build_stubbed(:slack_event, :help) }
   let(:help) do
-    ApplicationController.render(template: 'slack_events/index.slack', layout: nil)
+    ApplicationController.render(template: 'slack_thread/help.slack', layout: nil)
   end
   let(:thread) { FactoryBot.build_stubbed(:slack_thread) }
 

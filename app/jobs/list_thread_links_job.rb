@@ -10,24 +10,17 @@ class ListThreadLinksJob < ApplicationJob
   self.priority = 100
 
   def run(event_id:, options: nil)
-    message = 'An unexpected error occurred. :shrug:'
     event = SlackEvent.find(event_id)
     slack_thread = SlackThread.find_or_initialize_by(slack_ts: event.thread_ts)
-    links_list = slack_thread.link_list.blank? ? 'None. _Yet_' : "- #{slack_thread.link_list.join("\n- ")}"
 
     SlackEvent.transaction do
-      message = if slack_thread.persisted?
-                  "🔗Links: #{links_list}."
-                else
-                  'We are not tracking this thread. Tell us to track it.'
-                end
-
       event.update(state: 'replied')
       # destroy the job when finished
       destroy
     end
 
     # post message in slack thread
+    message = render('slack_thread/links.slack', flash: '', slack_thread: slack_thread)
     slack_thread.post_ephemeral_reply(message, event.user)
   end
 end
