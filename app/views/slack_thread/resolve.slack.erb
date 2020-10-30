@@ -1,5 +1,5 @@
 <% unless slack_thread.errors.empty? %>
-  :shrug:There were errors. <%= slack_thread.errors.full_messages.join('. ') %>.
+  :shrug: There were errors. <%= slack_thread.errors.full_messages.join('. ') %>.
 <% else %>
-  This thread has been marked as resolved. :white_check_mark:
+  :white_check_mark: This thread has been marked as resolved.
 <% end %>

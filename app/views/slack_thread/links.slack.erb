@@ -1,9 +1,9 @@
 <% if !slack_thread.errors.empty? %>
-  :shrug:There were errors. <%= slack_thread.errors.full_messages.join('. ') %>.
+  :shrug: There were errors. <%= slack_thread.errors.full_messages.join('. ') %>.
 <% elsif slack_thread.persisted? %>
   <%= flash %>
   <% links_list = slack_thread.link_list.blank? ? 'None. _Yet_' : "- #{slack_thread.link_list.join("\n- ")}" %>
-  :link:Links: <%= links_list %>.
+  :link: Links: <%= links_list %>.
 <% else %>
   We are not tracking this thread. Tell us to track it.
 <% end %>
