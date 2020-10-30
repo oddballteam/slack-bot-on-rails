@@ -22,6 +22,10 @@ class RemoveThreadLinkJob < ApplicationJob
       destroy
     end
 
+    # update issue description
+    installation = GithubInstallation.last
+    installation.link_issue(slack_thread) if installation&.repository&.present?
+
     # post message in slack thread
     message = render('slack_thread/links.slack', flash: "#{options} removed.", slack_thread: slack_thread)
     slack_thread.post_ephemeral_reply(message, event.user)

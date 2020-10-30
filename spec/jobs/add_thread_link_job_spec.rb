@@ -3,7 +3,6 @@
 RSpec.describe AddThreadLinkJob do
   let(:event) { FactoryBot.build_stubbed(:slack_event) }
   let(:installation) { FactoryBot.build(:github_installation, :access_token) }
-  let(:issue) { FactoryBot.build(:github_issue) }
 
   subject(:thread) { FactoryBot.build_stubbed(:slack_thread, :links, :issue) }
 
@@ -13,7 +12,7 @@ RSpec.describe AddThreadLinkJob do
     expect(SlackThread).to receive(:find_or_initialize_by_event).with(event) { thread }
     expect(thread).to receive(:save)
     allow(GithubInstallation).to receive(:last) { installation }
-    allow(installation).to receive(:link_issue) { issue }
+    allow(installation).to receive(:link_issue)
     allow(thread).to receive(:post_ephemeral_reply)
     AddThreadLinkJob.run(event_id: event.id, options: 'https://www.test.com')
   end
