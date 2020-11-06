@@ -49,90 +49,63 @@ RSpec.describe GithubInstallation, type: :model do
     end
   end
 
-  describe '#close_issue' do
-    let(:github_issue) { FactoryBot.build(:github_issue, :closed) }
+  describe '#client' do
     let(:installation) { FactoryBot.build(:github_installation, :access_token) }
-
-    subject do
-      installation.close_issue(issue_number: 1234)
-    end
-
-    before do
-      expect(Octokit::Client).to receive(:new).with(access_token: installation.access_token) { client }
-      expect(client).to receive(:close_issue).with(installation.repository, 1234) { github_issue }
-    end
-
-    it { is_expected.to eq github_issue }
+    its(:client) { is_expected.to be_a(Octokit::Client) }
   end
 
-  describe '#create_issue' do
+  context 'github app installed' do
     let(:github_issue) { FactoryBot.build(:github_issue) }
     let(:installation) { FactoryBot.build(:github_installation, :access_token) }
 
-    subject do
-      installation.create_issue(title: 'Updated Docs', body: 'Added some extra links', labels: ['chickens'])
-    end
-
     before do
       expect(Octokit::Client).to receive(:new).with(access_token: installation.access_token) { client }
-      expect(client).to receive(:create_issue).with(
-        installation.repository,
-        'Updated Docs',
-        'Added some extra links',
-        labels: ['chickens']
-      ) {
-        github_issue
-      }
     end
 
-    it { is_expected.to eq github_issue }
-  end
+    describe '#create_issue' do
+      subject do
+        installation.create_issue(title: 'Updated Docs', body: 'Added some extra links', labels: ['chickens'])
+      end
 
-  describe '#label_issue' do
-    let(:github_issue) { FactoryBot.build(:github_issue) }
-    let(:installation) { FactoryBot.build(:github_installation, :access_token) }
-    let(:labels) { %w[one two three] }
+      before do
+        expect(client).to receive(:create_issue).with(
+          installation.repository,
+          'Updated Docs',
+          'Added some extra links',
+          labels: ['chickens']
+        ) {
+          github_issue
+        }
+      end
 
-    subject do
-      installation.label_issue(issue_number: 1234, labels: labels)
+      it { is_expected.to eq github_issue }
     end
 
-    before do
-      expect(Octokit::Client).to receive(:new).with(access_token: installation.access_token) { client }
-      expect(client).to receive(:update_issue).with(installation.repository, 1234, labels: labels) { github_issue }
+    describe '#link_issue' do
+      let(:description) do
+        ApplicationController.render(
+          template: 'issues/description.md',
+          layout: nil,
+          locals: {slack_thread: slack_thread}
+        )
+      end
+      let(:slack_thread) { FactoryBot.build_stubbed(:slack_thread, :links, :issue) }
+
+      subject do
+        installation.link_issue(slack_thread)
+      end
+
+      before do
+        expect(client).to receive(:update_issue).with(
+          installation.repository,
+          slack_thread.issue_number,
+          body: description
+        ) {
+          github_issue
+        }
+      end
+
+      it { is_expected.to eq github_issue }
     end
-
-    it { is_expected.to eq github_issue }
-  end
-
-  describe '#link_issue' do
-    let(:description) do
-      ApplicationController.render(
-        template: 'issues/description.md',
-        layout: nil,
-        locals: {slack_thread: slack_thread}
-      )
-    end
-    let(:github_issue) { FactoryBot.build(:github_issue) }
-    let(:installation) { FactoryBot.build(:github_installation, :access_token) }
-    let(:links) { %w[https://f1337.github.io https://github.com] }
-    let(:slack_thread) { FactoryBot.build_stubbed(:slack_thread, :links, :issue) }
-
-    subject do
-      installation.link_issue(slack_thread)
-    end
-
-    before do
-      expect(Octokit::Client).to receive(:new).with(access_token: installation.access_token) { client }
-      expect(client).to receive(:update_issue).with(
-        installation.repository,
-        slack_thread.issue_number,
-        body: description
-      ) {
-        github_issue
-      }
-    end
-
-    it { is_expected.to eq github_issue }
   end
 end

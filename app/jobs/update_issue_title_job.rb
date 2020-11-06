@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# add the named category to the current thread and
-# reply in Slack thread w/ the updated category list.
-class AddThreadCategoryJob < ApplicationJob
+# add the given link to the current thread and
+# reply in Slack thread w/ the updated link list.
+class UpdateIssueTitleJob < ApplicationJob
   # Default settings for this job. These are optional - without them, jobs
   # will default to priority 100 and run immediately.
   # self.run_at = proc { 1.minute.from_now }
@@ -14,20 +14,15 @@ class AddThreadCategoryJob < ApplicationJob
     event = SlackEvent.find(event_id)
     slack_thread = SlackThread.find_or_initialize_by_event(event)
 
-    SlackThread.transaction do
-      slack_thread.category_list.add(options)
-      slack_thread.save
-
+    SlackEvent.transaction do
+      slack_thread.issue.title = options
       event.update(state: 'replied')
       # destroy the job when finished
       destroy
     end
 
-    # update issue labels
-    slack_thread.issue.labels = slack_thread.category_list
-
-    # post message in slack thread
-    message = render('slack_thread/labels.slack', flash: "#{options} added.", slack_thread: slack_thread)
+    # post link to issue in the slack thread
+    message = render('slack_thread/issue_url.slack', flash: 'Issue description updated:', slack_thread: slack_thread)
     slack_thread.post_ephemeral_reply(message, event.user)
   end
 end

@@ -131,6 +131,12 @@ RSpec.describe SlackEvent, type: :model do
       it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: nil) }
     end
 
+    context 'title' do
+      subject { UpdateIssueTitleJob }
+      let(:event) { FactoryBot.build(:slack_event, :title) }
+      it { is_expected.to have_received(:enqueue).with(event_id: event.id, options: 'Swallowed a bug') }
+    end
+
     context 'track' do
       subject { CreateThreadJob }
       let(:event) { FactoryBot.build_stubbed(:slack_event, :track) }

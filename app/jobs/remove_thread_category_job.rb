@@ -23,10 +23,7 @@ class RemoveThreadCategoryJob < ApplicationJob
     end
 
     # update issue labels
-    installation = GithubInstallation.last
-    if installation&.repository&.present?
-      installation.label_issue(issue_number: slack_thread.issue_number, labels: slack_thread.category_list)
-    end
+    slack_thread.issue.labels = slack_thread.category_list
 
     # post message in slack thread
     message = render('slack_thread/labels.slack', flash: "#{options} removed.", slack_thread: slack_thread)

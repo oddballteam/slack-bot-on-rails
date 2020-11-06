@@ -148,6 +148,14 @@ FactoryBot.define do
       end
     end
 
+    trait :title do
+      thread
+      metadata do
+        megahash['event'].merge!('text' => '<@BOT> title Swallowed a bug')
+        megahash
+      end
+    end
+
     trait :track do
       thread
       metadata do

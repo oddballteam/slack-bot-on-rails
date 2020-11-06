@@ -9,7 +9,8 @@ RSpec.describe CreateIssueJob do
     allow(SlackThread).to receive(:find).with(slack_thread.id) { slack_thread }
     allow(slack_thread).to receive(:post_message)
     allow(installation).to receive(:create_issue) { issue }
-    allow(slack_thread).to receive(:update) { true }
+    allow(slack_thread).to receive(:assign_attributes).and_call_original
+    allow(slack_thread).to receive(:save) { true }
     CreateIssueJob.run(thread_id: slack_thread.id)
   end
 
@@ -27,7 +28,7 @@ RSpec.describe CreateIssueJob do
     end
 
     it 'saves issue_url' do
-      expect(slack_thread).to have_received(:update).with(issue_url: issue.html_url)
+      expect(slack_thread).to have_received(:assign_attributes).with(issue_url: issue.html_url)
     end
   end
 end

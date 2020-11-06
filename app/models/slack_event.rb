@@ -19,6 +19,7 @@ class SlackEvent < ApplicationRecord
     'remove category' => RemoveThreadCategoryJob,
     'remove link' => RemoveThreadLinkJob,
     'resolve' => ResolveThreadJob,
+    'title' => UpdateIssueTitleJob,
     'track' => CreateThreadJob,
     'unlink' => RemoveThreadLinkJob
   }.freeze

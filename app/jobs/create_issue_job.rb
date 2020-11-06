@@ -18,14 +18,16 @@ class CreateIssueJob < ApplicationJob
     issue = installation.create_issue(title: "Slack thread ##{slack_thread.id}")
 
     SlackThread.transaction do
-      slack_thread.update(issue_url: issue.html_url) if issue&.html_url
+      slack_thread.assign_attributes(issue_url: issue.html_url)
+      slack_thread.save if issue&.html_url
       # destroy the job when finished
       destroy
     end
 
-    return unless issue&.html_url
+    return if slack_thread&.issue_url.blank?
 
     # post link to issue in the slack thread
-    slack_thread.post_message("Issue created: #{issue.html_url} :ticket:")
+    message = render('slack_thread/issue_url.slack', flash: 'Issue created:', slack_thread: slack_thread)
+    slack_thread.post_message(message)
   end
 end

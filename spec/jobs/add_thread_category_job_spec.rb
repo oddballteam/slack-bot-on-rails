@@ -4,7 +4,7 @@ RSpec.describe AddThreadCategoryJob do
   let(:errors) { [] }
   let(:event) { FactoryBot.build_stubbed(:slack_event) }
   let(:installation) { FactoryBot.build(:github_installation, :access_token) }
-  let(:issue) { FactoryBot.build(:github_issue) }
+  let(:issue) { thread.issue }
 
   subject(:thread) { FactoryBot.build_stubbed(:slack_thread, :categories, :issue) }
 
@@ -14,7 +14,7 @@ RSpec.describe AddThreadCategoryJob do
     expect(SlackThread).to receive(:find_or_initialize_by_event).with(event) { thread }
     expect(thread).to receive(:save)
     allow(GithubInstallation).to receive(:last) { installation }
-    allow(installation).to receive(:label_issue) { issue }
+    allow(issue).to receive(:labels=) { issue }
     allow(thread).to receive(:post_ephemeral_reply)
     AddThreadCategoryJob.run(event_id: event.id, options: 'cheese')
   end
@@ -23,7 +23,7 @@ RSpec.describe AddThreadCategoryJob do
     let(:labels) { thread.category_list }
     it { is_expected.to have_received(:post_ephemeral_reply).with(/added/i, 'U061F7AUR') }
     it 'updates the issue label(s)' do
-      expect(installation).to have_received(:label_issue).with(issue_number: thread.issue_number, labels: labels)
+      expect(issue).to have_received(:labels=).with(labels)
     end
   end
 

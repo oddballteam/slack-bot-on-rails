@@ -15,16 +15,15 @@ class CloseIssueJob < ApplicationJob
     return unless installation&.repository&.present?
 
     slack_thread = SlackThread.find(thread_id)
-    issue = installation.close_issue(issue_number: slack_thread.issue_number)
+    slack_thread.issue.close
 
     SlackThread.transaction do
       # destroy the job when finished
       destroy
     end
 
-    # return unless issue&.html_url
-
     # post link to issue in the slack thread
-    slack_thread.post_message("Issue closed: #{issue.html_url} :ticket:")
+    message = render('slack_thread/issue_url.slack', flash: 'Issue closed:', slack_thread: slack_thread)
+    slack_thread.post_message(message)
   end
 end

@@ -21,19 +21,14 @@ class GithubInstallation < ApplicationRecord
     super
   end
 
-  # close the github issue on the given repository with the given number
-  def close_issue(issue_number:)
-    client.close_issue(repository, issue_number)
+  # github api client
+  def client
+    @client ||= Octokit::Client.new(access_token: access_token)
   end
 
   # create a github issue on the given repository with the given summary/title
   def create_issue(title:, body: nil, labels: [])
     client.create_issue(repository, title, body, labels: labels)
-  end
-
-  # set the github issue labels
-  def label_issue(issue_number:, labels:)
-    client.update_issue(repository, issue_number, labels: labels)
   end
 
   # update the github issue description with links
@@ -46,11 +41,12 @@ class GithubInstallation < ApplicationRecord
     client.update_issue(repository, slack_thread.issue_number, body: description)
   end
 
-  private
-
-  def client
-    @client ||= Octokit::Client.new(access_token: access_token)
+  # set the github issue title, description
+  def update_issue_description(description)
+    # client.update_issue(repository, issue_number, body: description)
   end
+
+  private
 
   def new_jwt_token
     credentials = Rails.application.credentials.github

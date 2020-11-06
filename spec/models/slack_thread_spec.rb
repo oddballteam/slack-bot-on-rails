@@ -95,6 +95,12 @@ RSpec.describe SlackThread do
     end
   end
 
+  describe '#issue' do
+    subject { thread.issue }
+    it { is_expected.to be_a GithubIssue }
+    its(:number) { is_expected.to eq thread.issue_number }
+  end
+
   describe '#issue_number' do
     subject { thread.issue_number }
     it { is_expected.to eq 123 }
@@ -129,6 +135,7 @@ RSpec.describe SlackThread do
         channel: thread.channel_id,
         thread_ts: thread.slack_ts,
         text: message,
+
         user: 'DEF789'
       }
     end

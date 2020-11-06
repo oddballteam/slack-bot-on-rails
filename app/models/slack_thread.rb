@@ -39,6 +39,11 @@ class SlackThread < ApplicationRecord
     "<#{Rails.application.routes.url_helpers.thread_url(id, host: host, format: :json)}|this thread>"
   end
 
+  # github issue
+  def issue
+    @issue ||= GithubIssue.new(number: issue_number)
+  end
+
   # issue number, parsed from the issue url
   def issue_number
     issue_url[/\d+\Z/].to_i
