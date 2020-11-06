@@ -1,5 +1,10 @@
 # README
 
+## Editing Slack & GitHub templates
+
+- views/issues/
+- views/slack_thread/
+
 ## Installation
 
 ### Create Your Slack App (optional)
