@@ -22,7 +22,7 @@ class UpdateIssueTitleJob < ApplicationJob
     end
 
     # post link to issue in the slack thread
-    message = render('slack_thread/issue_url.slack', flash: 'Issue description updated:', slack_thread: slack_thread)
+    message = render('slack_thread/issue_url.slack', flash: 'Issue title updated:', slack_thread: slack_thread)
     slack_thread.post_ephemeral_reply(message, event.user)
   end
 end
